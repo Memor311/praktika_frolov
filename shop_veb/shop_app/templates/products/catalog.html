@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}Каталог цветов{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <h1 class="mb-4">Каталог товаров</h1>
+  <div class="mb-4">
+    <form class="row g-3 align-items-end">
+      <div class="col-md">
+        <input type="text" name="search" class="form-control" placeholder="Поиск">
+      </div>
+      <div class="col-md">
+        <select name="filter" class="form-select">
+          <option value="">Все категории</option>
+          {% for item in category %}
+          <option value="{{ item.id }}" {% if filter == item.id %} selected {% endif %}>
+            {{ item.name }}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-auto">
+        <button type="submit" class="btn btn-primary w-100">Поиск</button>
+      </div>
+    </form>
+  </div>
+
+  {% if products %}
+  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+    {% for product in products %}
+
+    <div class="col">
+      <a class="text-decoration-none" href="{% url 'product-detail' product.id %}">
+        <div class="card h-100 shadow-sm">
+          {% if product.photo %}
+          <img src="{{ product.photo.url }}" class="card-img-top" alt="{{ product.name }}"
+            style="height: 200px; object-fit: cover;">
+          {% else %}
+          <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+            <span class="text-muted">Нет фото</span>
+          </div>
+          {% endif %}
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title">{{ product.name }}</h5>
+            <p class="card-text text-muted small">Категория: {{ product.category.name }}</p>
+            <div class="mt-auto">
+              <p class="card-text fs-5 fw-bold text-danger">{{ product.price }} ₽</p>
+              <form method="post" action="{% url 'add-to-cart' %}" class="d-inline">
+                {% csrf_token %}
+                <input type="hidden" name="product_id" value="{{ product.id }}">
+                <button type="submit" class="btn btn-outline-primary">В корзину</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="alert alert-info">
+    В каталоге пока нет товаров.
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

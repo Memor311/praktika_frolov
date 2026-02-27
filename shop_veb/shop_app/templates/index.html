@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% block title %} Начальная Страница {% endblock %}
+
+{% block content %}
+<div class="text-center">
+  <h1>Информация о магазине</h1>
+  <div class="container text-center bg-danger-darker rounded-4 mt-5 col-6">
+    <h2 class="cart-text-title">Цветочный магазин "Рукодельница"</h2>
+    <hr>
+    <p class="cart-text">
+      Мы создаём уникальные букеты из живых цветов, венки и композиции на заказ —
+      с любовью, вниманием к деталям и индивидуальным подходом.
+    </p>
+  </div>
+
+  <hr>
+
+  {% if reviews %}
+  <div class="mt-5">
+    <h2 class="text-center mb-4">Что говорят наши клиенты</h2>
+    <div id="reviewsCarousel" class="carousel slide mx-auto" data-bs-ride="carousel" style="max-width: 800px;">
+      <div class="carousel-inner">
+        {% for review in reviews %}
+        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+          <div class="card shadow-sm border-0">
+            <div class="card-body text-center p-4">
+              <!-- Звёзды -->
+              <div class="mb-3">
+                {% for i in "12345" %}
+                {% if forloop.counter <= review.score %} <span class="text-warning fs-4">★</span>
+                  {% else %}
+                  <span class="text-secondary fs-4">☆</span>
+                  {% endif %}
+                  {% endfor %}
+              </div>
+
+              <!-- Текст отзыва -->
+              <p class="lead text-dark mb-4">
+                "{{ review.text|default:"Без текста" }}"
+              </p>
+
+              <!-- Автор и товар -->
+              <div class="mb-3">
+                <strong>{{ review.user.username }}</strong>
+              </div>
+
+              <!-- Фото отзывов (если есть) -->
+              {% if review.photos.exists %}
+              <div class="d-flex justify-content-center gap-2 mb-3">
+                {% for photo in review.photos.all %}
+                {% if photo.photo %}
+                <img src="{{ photo.photo.url }}" alt="Фото отзыва" class="rounded border"
+                  style="height: 80px; object-fit: cover;">
+                {% endif %}
+                {% endfor %}
+              </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- Кнопки навигации (только если >1 отзыва) -->
+      {% if reviews|length > 1 %}
+      <button class="carousel-control-prev" type="button" data-bs-target="#reviewsCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Предыдущий</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#reviewsCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Следующий</span>
+      </button>
+      {% endif %}
+
+      <!-- Индикаторы (точки) — опционально -->
+      <div class="carousel-indicators">
+        {% for review in reviews %}
+        <button type="button" data-bs-target="#reviewsCarousel" data-bs-slide-to="{{ forloop.counter0 }}"
+          class="{% if forloop.first %}active{% endif %}" aria-current="true"
+          aria-label="Slide {{ forloop.counter }}"></button>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  {% else %}
+  <div class="alert alert-info text-center mt-5">
+    Пока нет отзывов. Будьте первым!
+  </div>
+
+
+  {% endif %}
+    <a href="{% url 'add-site-review' %}" class="btn btn-outline-secondary mt-3 btn-sm">Оставить отзыв</a>
+  {% endblock %}

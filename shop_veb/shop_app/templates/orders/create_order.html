@@ -1,0 +1,40 @@
+<!-- templates/shop/create_order.html -->
+{% extends 'base.html' %}
+{% block title %}Оформить заказ{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <h2>Оформление заказа</h2>
+
+  {% if products %}
+    <div class="row">
+      <div class="col-md-8">
+        <h4>Состав заказа:</h4>
+        <ul class="list-group mb-4">
+          {% for item in products %}
+            <li class="list-group-item d-flex justify-content-between">
+              {{ item.product.name }} × {{ item.count }}
+              <span>{{ item.product.price|floatformat:2 }} ₽</span>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div class="col-md-4">
+        <h4>Итого: {{ total|floatformat:2 }} ₽</h4>
+
+        <form method="post">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label class="form-label">Адрес доставки</label>
+            <textarea name="address" class="form-control" rows="3" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-success w-100">Подтвердить заказ</button>
+        </form>
+      </div>
+    </div>
+  {% else %}
+    <p>Корзина пуста.</p>
+  {% endif %}
+</div>
+{% endblock %}

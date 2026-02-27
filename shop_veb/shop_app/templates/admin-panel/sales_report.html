@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}Отчёт по продажам{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1>Отчёт по продажам</h1>
+  <div class="btn-group">
+    <a href="?export=xlsx" class="btn btn-primary">Экспорт в Excel</a>
+  </div>
+</div>
+  {% if report %}
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Товар</th>
+            <th>Количество</th>
+            <th>Сумма (₽)</th>
+            <th>Среднее в заказе</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in report %}
+            <tr>
+              <td>{{ item.product_name }}</td>
+              <td>{{ item.total_quantity }}</td>
+              <td>{{ item.total_revenue|floatformat:2 }} ₽</td>
+              <td>{{ item.avg_per_order|floatformat:2 }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p>Нет данных для отчёта.</p>
+  {% endif %}
+</div>
+{% endblock %}

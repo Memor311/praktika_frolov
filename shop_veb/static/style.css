@@ -1,0 +1,16 @@
+.bg-danger-darker {
+    background-color: #ca95e2 !important;
+}
+.cart-text-title{
+    font-size: 35px;
+}
+.cart-text{
+    font-size: 25px;
+}
+a{
+  text-decoration: none;
+}
+
+.main{
+    min-height: 100vh;
+}

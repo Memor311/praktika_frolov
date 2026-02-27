@@ -1,0 +1,50 @@
+<!-- templates/shop/admin_dashboard.html -->
+{% extends 'base.html' %}
+
+{% block title %}Админ-панель{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <h1 class="mb-4">Админ-панель</h1>
+  
+  <div class="row g-4">
+    <!-- Товары -->
+    <div class="col-md-4">
+      <div class="card border-start border-3 border-success h-100">
+        <div class="card-body">
+          <h5 class="card-title">Товары</h5>
+          <p class="text-muted">Управление каталогом</p>
+          <a href="{% url 'admin-products' %}" class="btn btn-outline-success">Перейти</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Заказы -->
+    <div class="col-md-4">
+      <div class="card border-start border-3 border-primary h-100">
+        <div class="card-body">
+          <h5 class="card-title">Заказы</h5>
+          <p class="text-muted">Обработка заказов</p>
+          <a href="{% url 'admin-orders' %}" class="btn btn-outline-primary">Перейти</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Отзывы -->
+    <div class="col-md-4">
+      <div class="card border-start border-3 border-warning h-100">
+        <div class="card-body">
+          <h5 class="card-title">Отзывы</h5>
+          <p class="text-muted">Модерация отзывов</p>
+          <a href="{% url 'admin-reviews' %}" class="btn btn-outline-warning">Перейти</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Отчёт по продажам -->
+  <div class="mt-4 text-center">
+    <a href="{% url 'sales-report' %}" class="btn btn-outline-secondary">📊 Отчёт по продажам</a>
+  </div>
+</div>
+{% endblock %}

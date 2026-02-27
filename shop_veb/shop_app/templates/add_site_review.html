@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}Оставить отзыв о магазине{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-7">
+      <h2 class="text-center mb-4">Оставьте отзыв о нашем магазине</h2>
+
+      {% if messages %}
+      {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+      {% endif %}
+
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="mb-3">
+          {{ form.text.label_tag }}
+          {{ form.text }}
+          {% if form.text.errors %}<div class="text-danger">{{ form.text.errors }}</div>{% endif %}
+        </div>
+
+        <div class="mb-3">
+          {{ form.score.label_tag }}
+          {{ form.score }}
+          {% if form.score.errors %}<div class="text-danger">{{ form.score.errors }}</div>{% endif %}
+        </div>
+
+        <!-- Поле для фото -->
+        <div class="mb-3">
+          {{ form.photos.label_tag }}
+          {{ form.photos }}
+          {% if form.photos.errors %}<div class="text-danger">{{ form.photos.errors }}</div>{% endif %}
+          <div class="form-text">Поддерживаются JPG, PNG. Максимум 5 МБ на файл.</div>
+        </div>
+
+        <button type="submit" class="btn btn-danger">Отправить отзыв</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}Оформление заказа{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <h2>Оформление заказа</h2>
+
+  <form method="post">
+    {% csrf_token %}
+
+    <div class="mb-3">
+      <label class="form-label">Адрес доставки</label>
+      <textarea name="address" class="form-control" rows="3" required>{{ initial_address }}</textarea>
+      {% if initial_address %}
+      <div class="form-text">Адрес взят из вашего профиля или последнего заказа.</div>
+      {% endif %}
+    </div>
+
+    <button type="submit" class="btn btn-success">Подтвердить заказ</button>
+    <a href="{% url 'cart' %}" class="btn btn-secondary">← Назад в корзину</a>
+  </form>
+</div>
+{% endblock %}
