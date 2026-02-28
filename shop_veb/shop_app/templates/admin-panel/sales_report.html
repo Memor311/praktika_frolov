@@ -1,38 +1,67 @@
 {% extends 'base.html' %}
+{% load static %}
+
 {% block title %}Отчёт по продажам{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-  <h1>Отчёт по продажам</h1>
-  <div class="btn-group">
-    <a href="?export=xlsx" class="btn btn-primary">Экспорт в Excel</a>
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>📊 Отчёт по продажам</h1>
+    <a href="?export=xlsx" class="btn btn-primary">📥 Экспорт в Excel</a>
   </div>
-</div>
-  {% if report %}
-    <div class="table-responsive">
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th>Товар</th>
-            <th>Количество</th>
-            <th>Сумма (₽)</th>
-            <th>Среднее в заказе</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for item in report %}
-            <tr>
-              <td>{{ item.product_name }}</td>
-              <td>{{ item.total_quantity }}</td>
-              <td>{{ item.total_revenue|floatformat:2 }} ₽</td>
-              <td>{{ item.avg_per_order|floatformat:2 }}</td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+
+  <!-- Фильтр по дате -->
+  <div class="card mb-4">
+    <div class="card-body">
+      <h5>Фильтр по дате</h5>
+      <form method="get" class="row g-3">
+        <div class="col-md-3">
+          <label class="form-label">С</label>
+          <input type="date" name="date_from" value="{{ date_from }}" class="form-control">
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">По</label>
+          <input type="date" name="date_to" value="{{ date_to }}" class="form-control">
+        </div>
+        <div class="col-md-2">
+          <button type="submit" class="btn btn-success mt-4">Применить</button>
+        </div>
+        {% if date_from or date_to %}
+          <div class="col-md-2">
+            <a href="{% url 'sales-report' %}" class="btn btn-secondary mt-4">Сбросить</a>
+          </div>
+        {% endif %}
+      </form>
     </div>
-  {% else %}
-    <p>Нет данных для отчёта.</p>
-  {% endif %}
+  </div>
+
+<div class="table-responsive">
+  <table class="table table-hover">
+    <thead class="table-light">
+      <tr>
+        <th>#</th>
+        <th>Товар</th>
+        <th>Категория</th>
+        <th>Количество</th>
+        <th>Заказов</th>
+        <th>Сумма (₽)</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in report %}
+        <tr>
+          <td>{{ forloop.counter }}</td>
+          <td>{{ item.product_name }}</td>                
+          <td>{{ item.category_name }}</td>                
+          <td>{{ item.total_quantity }}</td>
+          <td>{{ item.order_count }}</td>               
+          <td>{{ item.total_revenue|floatformat:2 }} ₽</td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="6" class="text-center text-muted">Нет данных за выбранный период</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
 </div>
 {% endblock %}

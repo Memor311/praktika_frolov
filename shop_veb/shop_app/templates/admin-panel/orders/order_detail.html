@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}Заказ №{{ order.id }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <h2>Заказ №{{ order.id }}</h2>
+
+  <div class="card mb-4">
+    <div class="card-body">
+      <p><strong>Статус:</strong> {{ order.status.name }}</p>
+      <p><strong>Дата создания:</strong> {{ order.created_at|date:"d.m.Y H:i" }}</p>
+      {% if order.address %}
+        <p><strong>Адрес доставки:</strong> {{ order.address }}</p>
+      {% endif %}
+      <p><strong>Телефон заказчика:</strong> {{ order.user.phone}}</p>
+      <p><strong>Итого:</strong> <span class="text-danger fw-bold">{{ order.total_price }} ₽</span></p>
+    </div>
+  </div>
+
+  <h4>Состав заказа:</h4>
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Товар</th>
+        <th>Категория</th>
+        <th>Цена</th>
+        <th>Количество</th>
+        <th>Сумма</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in order.order_items.all %}
+        <tr>
+          <td>{{ item.product.name }}</td>
+          <td>{{ item.product.category.name }}</td>
+          <td>{{ item.product.price }} ₽</td>
+          <td>{{ item.count }}</td>
+          <td>{{ item.total_price }} ₽</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <a href="{% url 'admin-orders' %}" class="btn btn-secondary">← Назад к заказам</a>
+</div>
+{% endblock %}
