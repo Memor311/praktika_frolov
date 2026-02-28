@@ -1,5 +1,4 @@
 {% extends 'base.html' %}
-{% load static %}
 
 {% block title %}Отчёт по продажам{% endblock %}
 
@@ -17,11 +16,11 @@
       <form method="get" class="row g-3">
         <div class="col-md-3">
           <label class="form-label">С</label>
-          <input type="date" name="date_from" value="{{ date_from }}" class="form-control">
+          <input type="date" name="date_from" value="{% if date_from %}{{ date_from }}{% endif %}" class="form-control">
         </div>
         <div class="col-md-3">
           <label class="form-label">По</label>
-          <input type="date" name="date_to" value="{{ date_to }}" class="form-control">
+          <input type="date" name="date_to" value="{% if date_to %}{{ date_to }}{% endif %}" class="form-control">
         </div>
         <div class="col-md-2">
           <button type="submit" class="btn btn-success mt-4">Применить</button>
@@ -35,33 +34,36 @@
     </div>
   </div>
 
-<div class="table-responsive">
-  <table class="table table-hover">
-    <thead class="table-light">
-      <tr>
-        <th>#</th>
-        <th>Товар</th>
-        <th>Категория</th>
-        <th>Количество</th>
-        <th>Заказов</th>
-        <th>Сумма (₽)</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for item in report %}
+  <!-- Таблица -->
+  <div class="table-responsive">
+    <table class="table table-hover">
+      <thead class="table-light">
         <tr>
-          <td>{{ forloop.counter }}</td>
-          <td>{{ item.product_name }}</td>                
-          <td>{{ item.category_name }}</td>                
-          <td>{{ item.total_quantity }}</td>
-          <td>{{ item.order_count }}</td>               
-          <td>{{ item.total_revenue|floatformat:2 }} ₽</td>
+          <th>#</th>
+          <th>Товар</th>
+          <th>Категория</th>
+          <th>Количество</th>
+          <th>Заказов</th>
+          <th>Среднее в заказе</th>
+          <th>Сумма (₽)</th>
         </tr>
-      {% empty %}
-        <tr><td colspan="6" class="text-center text-muted">Нет данных за выбранный период</td></tr>
-      {% endfor %}
-    </tbody>
-  </table>
-</div>
+      </thead>
+      <tbody>
+        {% for item in report %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ item.product_name }}</td>
+            <td>{{ item.category_name }}</td>
+            <td>{{ item.total_quantity }}</td>
+            <td>{{ item.order_count }}</td>
+            <td>{{ item.avg_per_order|floatformat:2 }}</td>
+            <td>{{ item.total_revenue|floatformat:2 }} ₽</td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="7" class="text-center text-muted">Нет данных за выбранный период</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 </div>
 {% endblock %}
