@@ -36,6 +36,8 @@ urlpatterns = [
     path('admin-panel/orders/', views.admin_orders_view, name='admin-orders'),
     path('admin-panel/order/<int:order_id>/update-status/', views.update_order_status_view, name='update-order-status'),
     path('admin-panel/order/<int:order_id>/', views.admin_order_detail, name='admin_order-detail'),
+    path('admin-panel/order/<int:order_id>/edit/', views.edit_order_view, name='edit-order'),
+    path('admin-panel/order/<int:order_id>/delete/', views.delete_order_view, name='delete-order'),
     #Отзывы
     path('admin-panel/reviews/', views.admin_reviews_view, name='admin-reviews'),
     path('admin-panel/review/<int:review_id>/delete/', views.delete_review_view, name='delete-review'),
