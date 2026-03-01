@@ -67,7 +67,9 @@
               </td>
               <td>{{ order.total_price }} ₽</td>
               <td>
-                <a href="{% url 'admin_order-detail' order.id %}" class="btn btn-sm btn-outline-info">Подробнее</a>
+                <a href="{% url 'admin_order-detail' order.id %}" class="btn btn-sm btn-info">Подробнее</a>
+                <a href="{% url 'edit-order' order.id %}" class="btn btn-sm btn-warning">Редактировать заказ</a>
+                <a href="{% url 'delete-order' order.id %}" class="btn btn-sm btn-danger">Удалить заказ</a>
               </td>
             </tr>
           {% endfor %}
