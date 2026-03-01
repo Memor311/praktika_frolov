@@ -6,13 +6,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <title>{% block title %}Мой сайт{% endblock %}</title>
     <link rel="icon" href="/media/favicon.ico" type="image/x-icon">
   {% load static %}
   <link rel="stylesheet" href="{% static 'style.css' %}">
 </head>
 
-<body class="d-flex flex-column min-vh-100" style="background-color: #dbdbdb;">
+<body class="d-flex flex-column min-vh-100" style="background-color: #f7f6f6;">
 
   <header>
     <nav class="navbar navbar-expand-lg bg-danger-darker border-bottom border-body mb-2">
@@ -26,12 +27,8 @@
             <li class="nav-item">
               <a class="nav-link" href="{% url 'catalog' %}">Каталог</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Процесс заказа</a>
-            </li>
           </ul>
 
-          <!-- Правое меню: авторизация + админка -->
           <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
             {% if user.is_authenticated %}
             <li class="nav-item ms-2">
@@ -52,12 +49,6 @@
             {% if user.is_authenticated and user.role.name == 'Администратор' %}
             <li class="nav-item ms-2">
               <a class="nav-link p-0 text-decoration-none" href="{% url 'admin-panel' %}">Админ-панель</a>
-            </li>
-            {% endif %}
-
-             {% if user.is_authenticated and user.role.name == 'Администратор' %}
-            <li class="nav-item ms-2">
-              <a class="nav-link p-0 text-decoration-none" href="{% url 'sales-report' %}">Отчёт по продажам</a>
             </li>
             {% endif %}
 
