@@ -1,8 +1,19 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
+import os
+import uuid
 
+def review_photo_path(instance, filename):
+    ext = filename.split('.')[-1]
+    new_filename = f"review_{instance.review.id}_{uuid.uuid4().hex}.{ext}"
+    return os.path.join('reviews', new_filename)
 
+def product_photo_path(instance, filename):
+    ext = filename.split('.')[-1]
+    new_filename = f"product_{instance.id or 'tmp'}_{uuid.uuid4().hex}.{ext}"
+    return os.path.join('products', new_filename)
+    
 class Role(models.Model):
     name = models.CharField(max_length=50, unique=True)
 
@@ -27,7 +38,7 @@ class Category(models.Model):
 class Product(models.Model):
     name = models.CharField(max_length=200)
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    photo = models.ImageField(upload_to='products/', blank=True, null=True)
+    photo = models.ImageField(upload_to=product_photo_path, blank=True, null=True)
     category = models.ForeignKey(Category, on_delete=models.PROTECT, related_name='products')
     is_active = models.BooleanField(default=True, verbose_name="Активен")
 
@@ -58,6 +69,14 @@ class Order(models.Model):
         )
         self.save(update_fields=['total_price'])
 
+    def update_total_price(self):
+        from django.db.models import Sum, F
+        total = self.order_items.aggregate(
+            total=Sum(F('count') * F('product__price'))
+        )['total'] or 0
+        self.total_price = total
+        self.save(update_fields=['total_price'])
+
 class OrderProduct(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='order_items')
     product = models.ForeignKey(Product, on_delete=models.PROTECT, related_name='order_products')
@@ -76,4 +95,4 @@ class Review(models.Model):
 
 class ReviewPhoto(models.Model):
     review = models.ForeignKey(Review, on_delete=models.CASCADE, related_name='photos')
-    photo = models.ImageField(upload_to='review_photos/', blank=True, null=True)
+    photo = models.ImageField(upload_to=review_photo_path, blank=True, null=True)
