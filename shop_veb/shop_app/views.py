@@ -224,7 +224,12 @@ def add_to_cart(request):
         request.session.modified = True
         messages.success(request, f'«{product.name}» добавлен в корзину!')
 
-    return redirect('catalog')
+    referer = request.META.get('HTTP_REFERER')
+    if referer:
+        return redirect(referer)
+    else:
+        # Если нет Referer — резервный вариант
+        return redirect('catalog')
 
 def cart_view(request):
     cart = request.session.get('cart', {})
@@ -371,8 +376,6 @@ def sales_report_view(request):
 
     if request.GET.get('export') == 'xlsx':
         return export_sales_report_xlsx(report)
-
-    # --- Контекст ---
     context = {
         'report': report,
         'date_from': date_from,
