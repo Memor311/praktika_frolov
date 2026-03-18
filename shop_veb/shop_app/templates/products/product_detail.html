@@ -31,8 +31,9 @@
       {% endif %}
 
       <!-- Кнопка "В корзину" -->
-      <form method="post" action="#" class="mt-4">
+      <form method="post" action="{% url 'add-to-cart' %}" class="mt-4">
         {% csrf_token %}
+        <input type="hidden" name="product_id" value="{{ product.id }}">
         <button type="submit" class="btn btn-danger btn-lg">В корзину</button>
       </form>
 
