@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>{{ title }}</h1>
+    <a href="{% url 'attribute-list' %}" class="btn btn-secondary">← Назад</a>
+  </div>
+
+  <div class="card" style="max-width: 600px;">
+    <div class="card-body">
+      <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label class="form-label">Название атрибута</label>
+          <input type="text" name="name" class="form-control" 
+                 value="{{ attribute.name|default:'' }}" required>
+        </div>
+        <button type="submit" class="btn btn-success">Сохранить</button>
+        <a href="{% url 'attribute-list' %}" class="btn btn-secondary ms-2">Отмена</a>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

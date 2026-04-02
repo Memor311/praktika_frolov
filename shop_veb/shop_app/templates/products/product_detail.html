@@ -20,15 +20,17 @@
       <p class="fs-3 text-danger fw-bold">{{ product.price }} ₽</p>
       <p class="text-muted">Категория: {{ product.category.name }}</p>
 
-      <!-- Атрибуты товара -->
-      {% if product.attributes.exists %}
-      <h5>Характеристики:</h5>
-      <ul class="list-unstyled">
-        {% for attr in product.attributes.all %}
-        <li><strong>{{ attr.attribute_name }}:</strong> {{ attr.attribute_value }}</li>
-        {% endfor %}
-      </ul>
-      {% endif %}
+     <!-- Атрибуты товара -->
+{% if product.attributes.exists %}
+  <div class="mt-4">
+    <h5>Характеристики:</h5>
+    <ul class="list-unstyled">
+      {% for pa in product.attributes.all %}
+        <li><strong>{{ pa.attribute.name }}:</strong> {{ pa.value }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endif %}
 
       <!-- Кнопка "В корзину" -->
       <form method="post" action="{% url 'add-to-cart' %}" class="mt-4">

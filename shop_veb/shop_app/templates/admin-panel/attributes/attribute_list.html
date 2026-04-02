@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}Атрибуты товаров{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Атрибуты товаров</h1>
+    <a href="{% url 'attribute-add' %}" class="btn btn-success">Добавить</a>
+  </div>
+
+  {% if attributes %}
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <thead class="table-light">
+          <tr>
+            <th>ID</th>
+            <th>Название</th>
+            <th>Действия</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for attr in attributes %}
+            <tr>
+              <td>{{ attr.id }}</td>
+              <td>{{ attr.name }}</td>
+              <td>
+                <a href="{% url 'attribute-edit' attr.id %}" class="btn btn-sm btn-outline-primary">Редактировать</a>
+                <a href="{% url 'attribute-delete' attr.id %}" class="btn btn-sm btn-outline-danger">
+                  Удалить
+                </a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="alert alert-info">Атрибуты ещё не созданы.</div>
+  {% endif %}
+</div>
+{% endblock %}

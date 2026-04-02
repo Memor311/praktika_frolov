@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from .models import User, Role, Product, Review
+from .models import User, Role, Product, Review, Attribute, ProductAttribute 
 
 class CustomUserRegistrationForm(UserCreationForm):
     phone = forms.CharField(max_length=20, required=False)
@@ -96,3 +96,22 @@ class CustomAuthenticationForm(AuthenticationForm):
         super().__init__(*args, **kwargs)
         self.fields['username'].widget.attrs.update({'class': 'form-control'})
         self.fields['password'].widget.attrs.update({'class': 'form-control'})
+
+class ProductAttributeForm(forms.ModelForm):
+    class Meta:
+        model = ProductAttribute
+        fields = ['attribute', 'value']
+        widgets = {
+            'attribute': forms.Select(attrs={'class': 'form-select'}),
+            'value': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Значение'}),
+        }
+
+class AddAttributeForm(forms.Form):
+    attribute_name = forms.CharField(
+        max_length=100,
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Новый атрибут'})
+    )
+    value = forms.CharField(
+        max_length=255,
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Значение'})
+    )

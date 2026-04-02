@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}Удалить атрибут{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="card" style="max-width: 600px;">
+    <div class="card-header bg-danger text-white">
+      <h5>Подтверждение удаления</h5>
+    </div>
+    <div class="card-body">
+      <p>Вы действительно хотите удалить атрибут <strong>«{{ attribute.name }}»</strong>?</p>
+      <p class="text-muted">Все товары, использующие этот атрибут, потеряют соответствующее значение.</p>
+      
+      <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Да, удалить</button>
+        <a href="{% url 'attribute-list' %}" class="btn btn-secondary ms-2">Отмена</a>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

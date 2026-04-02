@@ -43,14 +43,29 @@ class Product(models.Model):
     is_active = models.BooleanField(default=True, verbose_name="Активен")
 
 
-class ProductAttribute(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='attributes')
-    attribute_name = models.CharField(max_length=100)
-    attribute_value = models.CharField(max_length=255)
+class Attribute(models.Model):
+    name = models.CharField("Название атрибута", max_length=100, unique=True)
+
+    def __str__(self):
+        return self.name
 
     class Meta:
-        unique_together = ('product', 'attribute_name')
+        verbose_name = "Атрибут"
+        verbose_name_plural = "Атрибуты"
 
+
+class ProductAttribute(models.Model):
+    product = models.ForeignKey('Product', on_delete=models.CASCADE, related_name='attributes')
+    attribute = models.ForeignKey(Attribute, on_delete=models.CASCADE)
+    value = models.CharField("Значение", max_length=255, null=True, blank=True, default="")
+
+    class Meta:
+        unique_together = ('product', 'attribute')  # один атрибут — одно значение на товар
+        verbose_name = "Атрибут товара"
+        verbose_name_plural = "Атрибуты товаров"
+
+    def __str__(self):
+        return f"{self.product.name} — {self.attribute.name}: {self.value}"
 
 class Status(models.Model):
     name = models.CharField(max_length=50, unique=True)

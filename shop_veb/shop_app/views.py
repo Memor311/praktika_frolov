@@ -1,9 +1,17 @@
 from django.db.models import Q, Sum, Avg, F, Count
+from django.template.loader import render_to_string
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.units import mm
+from reportlab.lib import colors
+from reportlab.platypus import Table, TableStyle, Paragraph
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from datetime import date
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.http import JsonResponse, HttpResponse
-from .forms import CustomUserRegistrationForm, ProductForm, SiteReviewForm, UserProfileForm, ReviewForm, CustomAuthenticationForm
-from shop_app.models import Product, Category, Order, Review, Status, ReviewPhoto, OrderProduct
+from .forms import CustomUserRegistrationForm, ProductForm, SiteReviewForm, UserProfileForm, ReviewForm, CustomAuthenticationForm, AddAttributeForm, ProductAttributeForm
+from shop_app.models import Product, Category, Order, Review, Status, ReviewPhoto, OrderProduct, ProductAttribute, Attribute
 from django.contrib.auth.views import LoginView
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
@@ -12,6 +20,23 @@ from openpyxl.utils import get_column_letter
 from openpyxl.styles import Font, Alignment, PatternFill
 from django.contrib.auth.decorators import user_passes_test
 from datetime import datetime
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
+import os
+
+# Попробуем найти DejaVuSans.ttf внутри reportlab
+try:
+    from reportlab.lib import fonts
+    # reportlab >= 3.6 включает DejaVu в resources
+    dejavu_path = os.path.join(os.path.dirname(fonts.__file__), 'DejaVuSans.ttf')
+    if os.path.exists(dejavu_path):
+        pdfmetrics.registerFont(TTFont('DejaVu', dejavu_path))
+        DEFAULT_FONT = 'DejaVu'
+    else:
+        raise FileNotFoundError
+except Exception:
+    # Если нет — используем fallback (FreeSans или Helvetica с кодировкой)
+    DEFAULT_FONT = 'Helvetica'
 
 def admin_required(view_func):
     def check_admin(user):
@@ -46,6 +71,72 @@ def add_site_review_view(request):
     
     return render(request, 'add_site_review.html', {'form': form})
 
+@admin_required
+def order_composition_report_pdf_view(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+    items = order.order_items.all()
+
+    data = [['Товар', 'Категория', 'Кол-во', 'Цена за шт. (₽)', 'Сумма (₽)']]
+    total_sum = 0
+    for item in items:
+        price_per = item.product.price
+        total_price = item.count * price_per
+        total_sum += total_price
+        data.append([
+            item.product.name,
+            item.product.category.name if item.product.category else '',
+            str(item.count),
+            f"{price_per:.2f}",
+            f"{total_price:.2f}"
+        ])
+    data.append(['', '', '', 'Итого:', f"{total_sum:.2f}"])
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="заказ_{order.id}_состав.pdf"'
+
+    p = canvas.Canvas(response, pagesize=A4)
+    width, height = A4
+
+    # Заголовок
+    p.setFont('Helvetica-Bold', 16)
+    p.drawCentredString(width / 2, height - 30, f"Отчёт состава заказа №{order.id}")
+
+    # Информация о заказе
+    p.setFont('Helvetica', 10)
+    y = height - 50
+    p.drawString(30, y, f"Клиент: {order.user.get_full_name() or order.user.email}")
+    y -= 15
+    p.drawString(30, y, f"Дата: {order.created_at.strftime('%d.%m.%Y %H:%M')}")
+    y -= 15
+    p.drawString(30, y, f"Статус: {order.status.name}")
+
+    # Таблица
+    table = Table(data, colWidths=[80, 60, 40, 60, 60])
+    table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, 0), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, 0), 10),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
+        ('FONTNAME', (0, 1), (-1, -2), 'Helvetica'),
+        ('FONTSIZE', (0, 1), (-1, -2), 9),
+        ('BACKGROUND', (0, -1), (-1, -1), colors.lightgrey),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, -1), (-1, -1), 10),
+    ]))
+
+    table.wrapOn(p, width - 60, height - 150)
+    table.drawOn(p, 30, height - 150 - table.wrapOn(p, width - 60, height - 150)[1])
+
+    # Подпись
+    p.setFont('Helvetica', 8)
+    p.drawString(30, 30, f"Сформировано: {date.today().strftime('%d.%m.%Y')}")
+
+    p.showPage()
+    p.save()
+    return response
 
 def catalog_view(request):
     products = Product.objects.select_related('category').filter(is_active=True)
@@ -66,8 +157,11 @@ def catalog_view(request):
     return render(request, 'products/catalog.html', context)
 
 
-def product_detail_view(request, product_id):
-    product = get_object_or_404(Product, id=product_id)
+def product_detail_view(request, pk):
+    product = get_object_or_404(
+        Product.objects.prefetch_related('attributes'),
+        id=pk
+    )
     return render(request, 'products/product_detail.html', {'product': product})
 
 class CustomLoginView(LoginView):
@@ -148,21 +242,92 @@ def add_product_view(request):
         form = ProductForm()
     return render(request, 'admin-panel/products/add_product.html', {'form': form})
 
+@admin_required
+def order_composition_report_view(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+    items = order.order_items.all()  # related_name='order_items'
+
+    # Подготовка данных
+    report_data = []
+    total_sum = 0
+    for item in items:
+        total_price = item.count * item.product.price
+        total_sum += total_price
+        report_data.append({
+            'product_name': item.product.name,
+            'category_name': item.product.category.name if item.product.category else '',
+            'count': item.count,
+            'price_per_unit': item.product.price,
+            'total_price': total_price,
+        })
+
+    context = {
+        'order': order,
+        'report_data': report_data,
+        'total_sum': total_sum,
+    }
+    return render(request, 'admin-panel/orders/order_composition_report.html', context)
 
 @admin_required
 def edit_product_view(request, product_id):
     product = get_object_or_404(Product, id=product_id)
+    form = ProductForm(request.POST or None, instance=product)
+
+    # Форма для добавления нового атрибута
+    add_attr_form = AddAttributeForm(request.POST or None)
+    # Форма для редактирования существующего атрибута
+    attr_forms = []
+    for attr in product.attributes.all():
+        attr_forms.append({
+            'form': ProductAttributeForm(request.POST or None, prefix=f'attr_{attr.id}'),
+            'instance': attr
+        })
+
     if request.method == 'POST':
-        form = ProductForm(request.POST, request.FILES, instance=product)
         if form.is_valid():
-            form.save()
-            messages.success(request, f'Товар «{product.name}» обновлён!')
-            return redirect('admin-panel')
-        else:
-            messages.error(request, 'Пожалуйста, исправьте ошибки.')
-    else:
-        form = ProductForm(instance=product)
-    return render(request, 'admin-panel/products/edit_product.html', {'form': form, 'product': product})
+            product = form.save()
+            messages.success(request, f'Товар «{product.name}» обновлён.')
+            return redirect('admin-products')
+
+        # --- Добавление нового атрибута ---
+        if add_attr_form.is_valid():
+            attr_name = add_attr_form.cleaned_data['attribute_name'].strip()
+            value = add_attr_form.cleaned_data['value'].strip()
+
+            # Создаём атрибут, если его нет
+            attr, created = Attribute.objects.get_or_create(name=attr_name)
+            # Добавляем значение к товару
+            ProductAttribute.objects.update_or_create(
+                product=product,
+                attribute=attr,
+                defaults={'value': value}
+            )
+            messages.success(request, f'Атрибут "{attr_name}: {value}" добавлен.')
+            return redirect('edit-product', product_id=product.id)
+
+        # --- Редактирование существующих атрибутов ---
+        for af in attr_forms:
+            if af['form'].is_valid():
+                af['form'].save()
+                messages.success(request, f'Атрибут обновлён.')
+                return redirect('edit-product', product_id=product.id)
+
+    context = {
+        'form': form,
+        'product': product,
+        'add_attr_form': add_attr_form,
+        'attr_forms': attr_forms,
+        'all_attributes': Attribute.objects.all(),
+    }
+    return render(request, 'admin-panel/products/edit_product.html', context)
+
+@admin_required
+def delete_product_attribute_view(request, attr_id):
+    attr = get_object_or_404(ProductAttribute, id=attr_id)
+    product_id = attr.product.id
+    attr.delete()
+    messages.success(request, "Атрибут удалён.")
+    return redirect('edit-product', product_id=product_id)
 
 @admin_required
 def delete_product_view(request, product_id):
@@ -522,3 +687,73 @@ def delete_order_view(request, order_id):
     order = get_object_or_404(Order, id=order_id)
     order.delete()
     return redirect('admin-orders')
+
+def add_product_attribute(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    if request.method == 'POST':
+        form = ProductAttributeForm(request.POST)
+        if form.is_valid():
+            attr = form.save(commit=False)
+            attr.product = product
+            attr.save()
+            messages.success(request, "Атрибут добавлен.")
+            return redirect('product-detail', pk=product.id)
+    else:
+        form = ProductAttributeForm()
+    return render(request, 'admin-panel/attributes/add_attribute.html', {'form': form, 'product': product})
+
+@admin_required
+def attribute_list_view(request):
+    attributes = Attribute.objects.all().order_by('name')
+    return render(request, 'admin-panel/attributes/attribute_list.html', {
+        'attributes': attributes
+    })
+
+@admin_required
+def attribute_add_view(request):
+    if request.method == 'POST':
+        name = request.POST.get('name', '').strip()
+        if name:
+            if not Attribute.objects.filter(name=name).exists():
+                Attribute.objects.create(name=name)
+                messages.success(request, f'Атрибут «{name}» добавлен.')
+            else:
+                messages.warning(request, 'Такой атрибут уже существует.')
+        else:
+            messages.error(request, 'Название не может быть пустым.')
+        return redirect('attribute-list')
+    return render(request, 'admin-panel/attributes/attribute_form.html', {
+        'title': 'Добавить атрибут'
+    })
+
+@admin_required
+def attribute_edit_view(request, attr_id):
+    attribute = get_object_or_404(Attribute, id=attr_id)
+    if request.method == 'POST':
+        name = request.POST.get('name', '').strip()
+        if name:
+            if Attribute.objects.filter(name=name).exclude(id=attr_id).exists():
+                messages.warning(request, 'Атрибут с таким названием уже существует.')
+            else:
+                attribute.name = name
+                attribute.save()
+                messages.success(request, f'Атрибут обновлён на «{name}».')
+                return redirect('attribute-list')
+        else:
+            messages.error(request, 'Название не может быть пустым.')
+    return render(request, 'admin-panel/attributes/attribute_form.html', {
+        'title': 'Редактировать атрибут',
+        'attribute': attribute
+    })
+
+@admin_required
+def attribute_delete_view(request, attr_id):
+    attribute = get_object_or_404(Attribute, id=attr_id)
+    if request.method == 'POST':
+        name = attribute.name
+        attribute.delete()
+        messages.success(request, f'Атрибут «{name}» удалён.')
+        return redirect('attribute-list')
+    return render(request, 'admin-panel/attributes/attribute_confirm_delete.html', {
+        'attribute': attribute
+    })

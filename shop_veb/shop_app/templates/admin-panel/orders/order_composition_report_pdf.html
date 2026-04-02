@@ -1,0 +1,66 @@
+<!-- templates/shop/admin-panel/orders/order_composition_report_pdf.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Отчёт состава заказа #{{ order.id }}</title>
+  <style>
+    body { font-family: DejaVu Sans, sans-serif; margin: 2cm; }
+    h1 { text-align: center; margin-bottom: 20px; }
+    .header { margin-bottom: 30px; }
+    .table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    .table th, .table td {
+      border: 1px solid #000;
+      padding: 8px 10px;
+      text-align: left;
+    }
+    .table th { background-color: #f0f0f0; }
+    .total { font-weight: bold; text-align: right; }
+    .footer { margin-top: 40px; text-align: center; font-size: 12px; color: #666; }
+  </style>
+</head>
+<body>
+  <h1>Отчёт состава заказа №{{ order.id }}</h1>
+
+  <div class="header">
+    <p><strong>Клиент:</strong> {{ order.user.get_full_name|default:order.user.email }}</p>
+    <p><strong>Дата:</strong> {{ order.created_at|date:"d.m.Y H:i" }}</p>
+    <p><strong>Статус:</strong> {{ order.status.name }}</p>
+  </div>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Товар</th>
+        <th>Категория</th>
+        <th>Кол-во</th>
+        <th>Цена за шт. (₽)</th>
+        <th>Сумма (₽)</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in report_data %}
+        <tr>
+          <td>{{ item.product_name }}</td>
+          <td>{{ item.category_name }}</td>
+          <td class="text-center">{{ item.count }}</td>
+          <td class="text-right">{{ item.price_per_unit|floatformat:2 }}</td>
+          <td class="text-right">{{ item.total_price|floatformat:2 }}</td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="5" class="text-center">В заказе нет товаров</td></tr>
+      {% endfor %}
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="4" class="total">Итого:</td>
+        <td class="total">{{ total_sum|floatformat:2 }} ₽</td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <div class="footer">
+    Сформировано в админ-панели {{ current_date }}
+  </div>
+</body>
+</html>
