@@ -1,94 +1,105 @@
 {% extends 'base.html' %}
-{% block title %} Начальная Страница {% endblock %}
+{% block title %}Цветочный магазин "Рукодельница"{% endblock %}
 
 {% block content %}
-<div class="text-center">
-  <h1>Информация о магазине</h1>
-  <div class="container text-center bg-danger-darker rounded-4 mt-5 col-6">
-    <h2 class="cart-text-title">Цветочный магазин "Рукодельница"</h2>
-    <hr>
-    <p class="cart-text">
-      Мы создаём уникальные букеты из живых цветов, венки и композиции на заказ —
-      с любовью, вниманием к деталям и индивидуальным подходом.
-    </p>
+<div class="container py-5">
+  <!-- Информация о магазине -->
+  <div class="text-center mb-5">
+    <h1 class="display-5 fw-bold text-dark">Цветочный магазин «Рукодельница»</h1>
+    <div class="col-lg-8 mx-auto mt-4 p-4 bg-light rounded-4 shadow-sm border border-dark-subtle">
+      <p class="lead text-muted mb-0">
+        Мы создаём уникальные букеты из живых цветов, венки и композиции на заказ —  
+        с любовью, вниманием к деталям и индивидуальным подходом.
+      </p>
+    </div>
   </div>
 
-  <hr>
+  <hr class="my-5">
 
+  <!-- Отзывы -->
   {% if reviews %}
-  <div class="mt-5">
-    <h2 class="text-center mb-4">Что говорят наши клиенты</h2>
-    <div id="reviewsCarousel" class="carousel slide mx-auto" data-bs-ride="carousel" style="max-width: 800px;">
-      <div class="carousel-inner">
+    <div class="text-center mb-4">
+      <h2 class="fw-bold text-dark">Что говорят наши клиенты</h2>
+      <p class="text-muted">Благодаря вам мы становимся лучше</p>
+    </div>
+
+    <div id="reviewsCarousel" class="carousel slide mx-auto mb-4" data-bs-ride="carousel" style="max-width: 800px;">
+      <div class="carousel-inner rounded-3 shadow">
         {% for review in reviews %}
-        <div class="carousel-item {% if forloop.first %}active{% endif %}">
-          <div class="card shadow-sm border-0">
-            <div class="card-body text-center p-4">
+          <div class="carousel-item {% if forloop.first %}active{% endif %}">
+            <div class="p-4 text-center">
               <!-- Звёзды -->
               <div class="mb-3">
                 {% for i in "12345" %}
-                {% if forloop.counter <= review.score %} <span class="text-warning fs-4">★</span>
+                  {% if forloop.counter <= review.score %}
+                    <span class="text-warning fs-4">★</span>
                   {% else %}
-                  <span class="text-secondary fs-4">☆</span>
+                    <span class="text-secondary fs-4">☆</span>
                   {% endif %}
-                  {% endfor %}
+                {% endfor %}
               </div>
 
               <!-- Текст отзыва -->
-              <p class="lead text-dark mb-4">
-                "{{ review.text|default:"Без текста" }}"
+              <p class="fs-5 fst-italic text-dark mb-4 px-3">
+                “{{ review.text|default:"Без текста" }}”
               </p>
 
-              <!-- Автор и товар -->
+              <!-- Автор -->
               <div class="mb-3">
-                <strong>{{ review.user.username }}</strong>
+                <strong class="text-dark">{{ review.user.username }}</strong>
               </div>
 
-              <!-- Фото отзывов (если есть) -->
+              <!-- Фото отзыва -->
               {% if review.photos.exists %}
-              <div class="d-flex justify-content-center gap-2 mb-3">
-                {% for photo in review.photos.all %}
-                {% if photo.photo %}
-                <img src="{{ photo.photo.url }}" alt="Фото отзыва" class="rounded border"
-                  style="height: 80px; object-fit: cover;">
-                {% endif %}
-                {% endfor %}
-              </div>
+                <div class="d-flex justify-content-center flex-wrap gap-2 mb-3">
+                  {% for photo in review.photos.all %}
+                    {% if photo.photo %}
+                      <img src="{{ photo.photo.url }}" alt="Фото к отзыву"
+                           class="rounded border border-success-subtle"
+                           style="height: 90px; width: 90px; object-fit: cover;">
+                    {% endif %}
+                  {% endfor %}
+                </div>
               {% endif %}
             </div>
           </div>
-        </div>
         {% endfor %}
       </div>
 
       <!-- Кнопки навигации (только если >1 отзыва) -->
       {% if reviews|length > 1 %}
-      <button class="carousel-control-prev" type="button" data-bs-target="#reviewsCarousel" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Предыдущий</span>
-      </button>
-      <button class="carousel-control-next" type="button" data-bs-target="#reviewsCarousel" data-bs-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Следующий</span>
-      </button>
+        <button class="carousel-control-prev" type="button" data-bs-target="#reviewsCarousel" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon bg-dark rounded-circle p-1" aria-hidden="true"></span>
+          <span class="visually-hidden">Предыдущий</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#reviewsCarousel" data-bs-slide="next">
+          <span class="carousel-control-next-icon bg-dark rounded-circle p-1" aria-hidden="true"></span>
+          <span class="visually-hidden">Следующий</span>
+        </button>
       {% endif %}
 
-      <!-- Индикаторы (точки) — опционально -->
-      <div class="carousel-indicators">
+      <!-- Индикаторы -->
+      <div class="carousel-indicators mt-3 justify-content-center">
         {% for review in reviews %}
-        <button type="button" data-bs-target="#reviewsCarousel" data-bs-slide-to="{{ forloop.counter0 }}"
-          class="{% if forloop.first %}active{% endif %}" aria-current="true"
-          aria-label="Slide {{ forloop.counter }}"></button>
+          <button type="button" data-bs-target="#reviewsCarousel" data-bs-slide-to="{{ forloop.counter0 }}"
+                  class="{% if forloop.first %}active{% endif %}" aria-label="Отзыв {{ forloop.counter }}">
+          </button>
         {% endfor %}
       </div>
     </div>
-  </div>
+
+    <div class="text-center">
+      <a href="{% url 'add-site-review' %}" class="btn btn-outline-dark mt-2">Оставить свой отзыв</a>
+    </div>
+
   {% else %}
-  <div class="alert alert-info text-center mt-5">
-    Пока нет отзывов. Будьте первым!
-  </div>
-
-
+    <div class="text-center py-5">
+      <div class="alert alert-light border border-success-subtle rounded-3 d-inline-block px-4">
+        <p class="mb-2">Пока никто не оставил отзыв.</p>
+        <p class="mb-0 text-muted">Станьте первым! 🌸</p>
+      </div>
+      <a href="{% url 'add-site-review' %}" class="btn btn-success mt-3">Оставить отзыв</a>
+    </div>
   {% endif %}
-    <a href="{% url 'add-site-review' %}" class="btn btn-outline-secondary mt-3 btn-sm">Оставить отзыв</a>
-  {% endblock %}
+</div>
+{% endblock %}

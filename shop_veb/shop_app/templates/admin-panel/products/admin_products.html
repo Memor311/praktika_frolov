@@ -45,6 +45,9 @@
               <td>
                 <a href="{% url 'edit-product' product.id %}" class="btn btn-sm btn-outline-primary">Редактировать</a>
                 <a href="{% url 'change-product' product.id %}" class="btn btn-sm btn-outline-danger">Изменить статус</a>
+                <a href="{% url 'product-attributes' product.id %}" class="btn btn-sm btn-outline-info">
+  Атрибуты
+</a>
               </td>
             </tr>
           {% endfor %}

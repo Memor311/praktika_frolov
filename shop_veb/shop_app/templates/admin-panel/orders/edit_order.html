@@ -14,7 +14,7 @@
       <h5 class="mb-0">Добавить товар в заказ</h5>
     </div>
     <div class="card-body">
-      <form method="post">
+      <form id="add-product-form">
         {% csrf_token %}
         <input type="hidden" name="action" value="add_product">
         <div class="row g-3">
@@ -23,7 +23,7 @@
             <select name="new_product_id" class="form-select" required>
               <option value="">Выберите товар</option>
               {% for prod in all_products %}
-                <option value="{{ prod.id }}">{{ prod.name }} ({{ prod.price }} ₽)</option>
+                <option value="{{ prod.id }}" data-price="{{ prod.price }}">{{ prod.name }} ({{ prod.price }} ₽)</option>
               {% endfor %}
             </select>
           </div>
@@ -42,9 +42,9 @@
   <!-- Список товаров в заказе -->
   {% if order_items %}
     <div class="row">
-      <div class="col-md-8">
+      <div class="col-md-8" id="order-items-container">
         {% for item in order_items %}
-          <div class="card mb-3">
+          <div class="card mb-3" data-product-id="{{ item.product.id }}">
             <div class="card-body d-flex justify-content-between align-items-center">
               <div>
                 <h5>{{ item.product.name }}</h5>
@@ -53,39 +53,27 @@
               
               <!-- Управление количеством -->
               <div class="d-flex align-items-center">
-                <form method="post" style="display:inline;">
-                  {% csrf_token %}
-                  <input type="hidden" name="product_id" value="{{ item.product.id }}">
-                  <input type="hidden" name="action" value="decrease">
-                  <button type="submit" class="btn btn-outline-secondary btn-sm"
-                          {% if item.count <= 1 %}disabled{% endif %}>
-                    –
-                  </button>
-                </form>
+                <button class="btn btn-outline-secondary btn-sm"
+                        onclick="updateItem({{ item.product.id }}, -1)"
+                        {% if item.count <= 1 %}disabled{% endif %}>
+                  –
+                </button>
                 
-                <span class="mx-2 fw-bold">{{ item.count }}</span>
+                <span class="mx-2 fw-bold" id="count-{{ item.product.id }}">{{ item.count }}</span>
                 
-                <form method="post" style="display:inline;">
-                  {% csrf_token %}
-                  <input type="hidden" name="product_id" value="{{ item.product.id }}">
-                  <input type="hidden" name="action" value="increase">
-                  <button type="submit" class="btn btn-outline-secondary btn-sm">+</button>
-                </form>
+                <button class="btn btn-outline-secondary btn-sm"
+                        onclick="updateItem({{ item.product.id }}, 1)">
+                  +
+                </button>
                 
-                <!-- Кнопка удаления -->
-                <form method="post" style="display:inline; margin-left: 10px;">
-                  {% csrf_token %}
-                  <input type="hidden" name="product_id" value="{{ item.product.id }}">
-                  <input type="hidden" name="action" value="remove">
-                  <button type="submit" 
-                          class="btn btn-outline-danger btn-sm"
-                          onclick="return confirm('Удалить «{{ item.product.name }}» из заказа?')">
-                    Удалить
-                  </button>
-                </form>
+                <button class="btn btn-outline-danger btn-sm ms-2"
+                        onclick="removeItem({{ item.product.id }})"
+                        title="Удалить из заказа">
+                  Удалить
+                </button>
               </div>
               
-              <div class="fw-bold text-danger">{{ item.total }} ₽</div>
+              <div class="fw-bold text-danger" id="total-{{ item.product.id }}">{{ item.total }} ₽</div>
             </div>
           </div>
         {% endfor %}
@@ -98,7 +86,7 @@
             <h5 class="mb-0">Итого по заказу</h5>
           </div>
           <div class="card-body">
-            <h4 class="text-danger">{{ total }} ₽</h4>
+            <h4 class="text-danger" id="order-total">{{ total }} ₽</h4>
             <p class="text-muted">Статус: {{ order.status.name }}</p>
             <a href="{% url 'admin-orders' %}" class="btn btn-success w-100">Сохранить и вернуться</a>
             
@@ -113,9 +101,106 @@
       </div>
     </div>
   {% else %}
-    <div class="alert alert-warning">
+    <div class="alert alert-warning" id="empty-order-alert">
       В заказе нет товаров.
     </div>
   {% endif %}
 </div>
+
+<!-- JavaScript -->
+<script>
+  // CSRF токен
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
+  const csrftoken = getCookie('csrftoken');
+
+  // Добавление товара
+  document.getElementById('add-product-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const formData = new FormData(form);
+
+    try {
+      const response = await fetch('{% url "edit-order" order.id %}', {
+        method: 'POST',
+        headers: { 'X-CSRFToken': csrftoken },
+        body: formData
+      });
+
+      if (response.ok) {
+        const html = await response.text();
+        // Перезагружаем только контейнер заказа
+        document.open();
+        document.write(html);
+        document.close();
+        // Альтернатива: обновлять DOM вручную (сложнее, но без полной перезагрузки)
+      }
+    } catch (err) {
+      alert('Ошибка при добавлении товара.');
+    }
+  });
+
+  // Обновление количества (+/-)
+  async function updateItem(productId, delta) {
+    const formData = new FormData();
+    formData.append('product_id', productId);
+    formData.append('action', delta > 0 ? 'increase' : 'decrease');
+
+    try {
+      const response = await fetch('{% url "edit-order" order.id %}', {
+        method: 'POST',
+        headers: { 'X-CSRFToken': csrftoken },
+        body: formData
+      });
+
+      if (response.ok) {
+        const html = await response.text();
+        document.open();
+        document.write(html);
+        document.close();
+      }
+    } catch (err) {
+      alert('Ошибка при обновлении количества.');
+    }
+  }
+
+  // Удаление товара
+  async function removeItem(productId) {
+    if (!confirm('Удалить товар из заказа?')) return;
+
+    const formData = new FormData();
+    formData.append('product_id', productId);
+    formData.append('action', 'remove');
+
+    try {
+      const response = await fetch('{% url "edit-order" order.id %}', {
+        method: 'POST',
+        headers: { 'X-CSRFToken': csrftoken },
+        body: formData
+      });
+
+      if (response.ok) {
+        const html = await response.text();
+        document.open();
+        document.write(html);
+        document.close();
+      }
+    } catch (err) {
+      alert('Ошибка при удалении товара.');
+    }
+  }
+</script>
 {% endblock %}

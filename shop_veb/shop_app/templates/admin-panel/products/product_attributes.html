@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block title %}Атрибуты товара: {{ product.name }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Атрибуты товара: {{ product.name }}</h1>
+    <a href="{% url 'admin-products' %}" class="btn btn-secondary">← Все товары</a>
+  </div>
+
+  <!-- Форма: добавить атрибут -->
+  <div class="card mb-4">
+    <div class="card-header bg-light">
+      <h5>➕ Добавить атрибут</h5>
+    </div>
+    <div class="card-body">
+      <form method="post" action="{% url 'add-product-attribute' product.id %}">
+        {% csrf_token %}
+        <div class="row g-2">
+          <div class="col-md-5">
+            <label>Атрибут</label>
+            <select name="attribute" class="form-select" required>
+              <option value="">Выберите...</option>
+              {% for attr in all_attributes %}
+                <option value="{{ attr.id }}">{{ attr.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-5">
+            <label>Значение</label>
+            <input type="text" name="value" class="form-control" placeholder="Например: Красный" required>
+          </div>
+          <div class="col-md-2 d-flex align-items-end">
+            <button type="submit" class="btn btn-success w-100">Добавить</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Список атрибутов -->
+  {% if attributes %}
+    <div class="card">
+      <div class="card-header bg-light">
+        <h5>Текущие атрибуты</h5>
+      </div>
+      <div class="card-body">
+        <div class="list-group">
+          {% for pa in attributes %}
+            <div class="list-group-item d-flex justify-content-between align-items-center">
+              <div>
+                <strong>{{ pa.attribute.name }}:</strong> {{ pa.value }}
+              </div>
+              <div class="btn-group btn-group-sm">
+                <!-- Форма редактирования (всплывающая или inline) -->
+                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editModal{{ pa.id }}">
+                  ✏️ Редактировать
+                </button>
+                <form method="post" action="{% url 'delete-product-attribute' product.id pa.id %}"
+                      onsubmit="return confirm('Удалить атрибут?');">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-outline-danger">🗑️ Удалить</button>
+                </form>
+              </div>
+            </div>
+
+            <!-- Модальное окно редактирования -->
+            <div class="modal fade" id="editModal{{ pa.id }}" tabindex="-1">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5>Редактировать атрибут</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                  </div>
+                  <form method="post" action="{% url 'edit-product-attribute' product.id pa.id %}">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                      <div class="mb-3">
+                        <label>Атрибут</label>
+                        <select name="attribute" class="form-select" required>
+                          {% for attr in all_attributes %}
+                            <option value="{{ attr.id }}" {% if attr.id == pa.attribute.id %}selected{% endif %}>
+                              {{ attr.name }}
+                            </option>
+                          {% endfor %}
+                        </select>
+                      </div>
+                      <div class="mb-3">
+                        <label>Значение</label>
+                        <input type="text" name="value" class="form-control" value="{{ pa.value }}" required>
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                      <button type="submit" class="btn btn-primary">Сохранить</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  {% else %}
+    <div class="alert alert-info">У этого товара пока нет атрибутов.</div>
+  {% endif %}
+</div>
+{% endblock %}

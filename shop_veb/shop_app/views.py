@@ -23,6 +23,7 @@ from datetime import datetime
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 import os
+from django.views.decorators.csrf import csrf_exempt
 
 # Попробуем найти DejaVuSans.ttf внутри reportlab
 try:
@@ -70,73 +71,6 @@ def add_site_review_view(request):
         form = SiteReviewForm()
     
     return render(request, 'add_site_review.html', {'form': form})
-
-@admin_required
-def order_composition_report_pdf_view(request, order_id):
-    order = get_object_or_404(Order, id=order_id)
-    items = order.order_items.all()
-
-    data = [['Товар', 'Категория', 'Кол-во', 'Цена за шт. (₽)', 'Сумма (₽)']]
-    total_sum = 0
-    for item in items:
-        price_per = item.product.price
-        total_price = item.count * price_per
-        total_sum += total_price
-        data.append([
-            item.product.name,
-            item.product.category.name if item.product.category else '',
-            str(item.count),
-            f"{price_per:.2f}",
-            f"{total_price:.2f}"
-        ])
-    data.append(['', '', '', 'Итого:', f"{total_sum:.2f}"])
-
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="заказ_{order.id}_состав.pdf"'
-
-    p = canvas.Canvas(response, pagesize=A4)
-    width, height = A4
-
-    # Заголовок
-    p.setFont('Helvetica-Bold', 16)
-    p.drawCentredString(width / 2, height - 30, f"Отчёт состава заказа №{order.id}")
-
-    # Информация о заказе
-    p.setFont('Helvetica', 10)
-    y = height - 50
-    p.drawString(30, y, f"Клиент: {order.user.get_full_name() or order.user.email}")
-    y -= 15
-    p.drawString(30, y, f"Дата: {order.created_at.strftime('%d.%m.%Y %H:%M')}")
-    y -= 15
-    p.drawString(30, y, f"Статус: {order.status.name}")
-
-    # Таблица
-    table = Table(data, colWidths=[80, 60, 40, 60, 60])
-    table.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, 0), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('FONTSIZE', (0, 0), (-1, 0), 10),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
-        ('FONTNAME', (0, 1), (-1, -2), 'Helvetica'),
-        ('FONTSIZE', (0, 1), (-1, -2), 9),
-        ('BACKGROUND', (0, -1), (-1, -1), colors.lightgrey),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('FONTSIZE', (0, -1), (-1, -1), 10),
-    ]))
-
-    table.wrapOn(p, width - 60, height - 150)
-    table.drawOn(p, 30, height - 150 - table.wrapOn(p, width - 60, height - 150)[1])
-
-    # Подпись
-    p.setFont('Helvetica', 8)
-    p.drawString(30, 30, f"Сформировано: {date.today().strftime('%d.%m.%Y')}")
-
-    p.showPage()
-    p.save()
-    return response
 
 def catalog_view(request):
     products = Product.objects.select_related('category').filter(is_active=True)
@@ -268,58 +202,22 @@ def order_composition_report_view(request, order_id):
     }
     return render(request, 'admin-panel/orders/order_composition_report.html', context)
 
-@admin_required
 def edit_product_view(request, product_id):
     product = get_object_or_404(Product, id=product_id)
-    form = ProductForm(request.POST or None, instance=product)
-
-    # Форма для добавления нового атрибута
-    add_attr_form = AddAttributeForm(request.POST or None)
-    # Форма для редактирования существующего атрибута
-    attr_forms = []
-    for attr in product.attributes.all():
-        attr_forms.append({
-            'form': ProductAttributeForm(request.POST or None, prefix=f'attr_{attr.id}'),
-            'instance': attr
-        })
 
     if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES, instance=product)
         if form.is_valid():
-            product = form.save()
-            messages.success(request, f'Товар «{product.name}» обновлён.')
+            form.save()
+            messages.success(request, f'Товар «{product.name}» успешно обновлён.')
             return redirect('admin-products')
+    else:
+        form = ProductForm(instance=product)
 
-        # --- Добавление нового атрибута ---
-        if add_attr_form.is_valid():
-            attr_name = add_attr_form.cleaned_data['attribute_name'].strip()
-            value = add_attr_form.cleaned_data['value'].strip()
-
-            # Создаём атрибут, если его нет
-            attr, created = Attribute.objects.get_or_create(name=attr_name)
-            # Добавляем значение к товару
-            ProductAttribute.objects.update_or_create(
-                product=product,
-                attribute=attr,
-                defaults={'value': value}
-            )
-            messages.success(request, f'Атрибут "{attr_name}: {value}" добавлен.')
-            return redirect('edit-product', product_id=product.id)
-
-        # --- Редактирование существующих атрибутов ---
-        for af in attr_forms:
-            if af['form'].is_valid():
-                af['form'].save()
-                messages.success(request, f'Атрибут обновлён.')
-                return redirect('edit-product', product_id=product.id)
-
-    context = {
+    return render(request, 'admin-panel/products/edit_product.html', {
         'form': form,
         'product': product,
-        'add_attr_form': add_attr_form,
-        'attr_forms': attr_forms,
-        'all_attributes': Attribute.objects.all(),
-    }
-    return render(request, 'admin-panel/products/edit_product.html', context)
+    })
 
 @admin_required
 def delete_product_attribute_view(request, attr_id):
@@ -612,11 +510,7 @@ def export_sales_report_xlsx(report, date_from=None, date_to=None):
     )
     response['Content-Disposition'] = 'attachment; filename=sales_report.xlsx'
     wb.save(response)
-    return response
-
-def admin_order_detail(request, order_id):
-    order = get_object_or_404(Order.objects.select_related('user'), id=order_id)
-    return render(request, 'admin-panel/orders/order_detail.html', {'order': order})    
+    return response  
 
 @admin_required
 def edit_order_view(request, order_id):
@@ -747,13 +641,59 @@ def attribute_edit_view(request, attr_id):
     })
 
 @admin_required
-def attribute_delete_view(request, attr_id):
-    attribute = get_object_or_404(Attribute, id=attr_id)
-    if request.method == 'POST':
-        name = attribute.name
-        attribute.delete()
-        messages.success(request, f'Атрибут «{name}» удалён.')
-        return redirect('attribute-list')
-    return render(request, 'admin-panel/attributes/attribute_confirm_delete.html', {
-        'attribute': attribute
+def product_attributes_view(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    attributes = product.attributes.select_related('attribute').all()
+    all_attributes = Attribute.objects.all()
+
+    return render(request, 'admin-panel/products/product_attributes.html', {
+        'product': product,
+        'attributes': attributes,
+        'all_attributes': all_attributes,
     })
+
+@admin_required
+def add_product_attribute_view(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    if request.method == 'POST':
+        attr_id = request.POST.get('attribute')
+        value = request.POST.get('value', '').strip()
+        if attr_id and value:
+            # Проверяем, не существует ли уже такой атрибут
+            if not product.attributes.filter(attribute_id=attr_id).exists():
+                ProductAttribute.objects.create(
+                    product=product,
+                    attribute_id=attr_id,
+                    value=value
+                )
+                messages.success(request, "Атрибут добавлен.")
+            else:
+                messages.warning(request, "Этот атрибут уже задан для товара.")
+        else:
+            messages.error(request, "Выберите атрибут и укажите значение.")
+    return redirect('product-attributes', product_id=product_id)
+
+@admin_required
+def edit_product_attribute_view(request, product_id, attr_id):
+    product = get_object_or_404(Product, id=product_id)
+    attr = get_object_or_404(ProductAttribute, id=attr_id, product=product)
+    
+    if request.method == 'POST':
+        attr.attribute_id = request.POST.get('attribute')
+        attr.value = request.POST.get('value', '').strip()
+        attr.save()
+        messages.success(request, "Атрибут обновлён.")
+        return redirect('product-attributes', product_id=product_id)
+    
+    # Для GET — редирект на страницу списка (редактирование через форму на той же странице)
+    return redirect('product-attributes', product_id=product_id)
+
+@admin_required
+def delete_product_attribute_view(request, product_id, attr_id):
+    product = get_object_or_404(Product, id=product_id)
+    attr = get_object_or_404(ProductAttribute, id=attr_id, product=product)
+    if request.method == 'POST':
+        attr_name = f"{attr.attribute.name}: {attr.value}"
+        attr.delete()
+        messages.success(request, f"Атрибут «{attr_name}» удалён.")
+    return redirect('product-attributes', product_id=product_id)

@@ -36,11 +36,9 @@ urlpatterns = [
     #Заказы
     path('admin-panel/orders/', views.admin_orders_view, name='admin-orders'),
     path('admin-panel/order/<int:order_id>/update-status/', views.update_order_status_view, name='update-order-status'),
-    path('admin-panel/order/<int:order_id>/', views.admin_order_detail, name='admin_order-detail'),
     path('admin-panel/order/<int:order_id>/edit/', views.edit_order_view, name='edit-order'),
     path('admin-panel/order/<int:order_id>/delete/', views.delete_order_view, name='delete-order'),
     path('admin-panel/order/<int:order_id>/composition-report/', views.order_composition_report_view, name='order-composition-report'),
-    path('admin-panel/order/<int:order_id>/composition-report/pdf/',views.order_composition_report_pdf_view,name='order-composition-report-pdf'),
     #Отзывы
     path('admin-panel/reviews/', views.admin_reviews_view, name='admin-reviews'),
     path('admin-panel/review/<int:review_id>/delete/', views.delete_review_view, name='delete-review'),
@@ -48,8 +46,11 @@ urlpatterns = [
     path('admin-panel/attributes/', views.attribute_list_view, name='attribute-list'),
     path('admin-panel/attributes/add/', views.attribute_add_view, name='attribute-add'),
     path('admin-panel/attributes/<int:attr_id>/edit/', views.attribute_edit_view, name='attribute-edit'),
-    path('admin-panel/attributes/<int:attr_id>/delete/', views.attribute_delete_view, name='attribute-delete'),
-    
+    path('admin-panel/attributes/<int:attr_id>/delete/', views.delete_product_attribute_view, name='attribute-delete'),
+    path('admin-panel/product/<int:product_id>/attributes/',views.product_attributes_view,name='product-attributes'),
+    path('admin-panel/product/<int:product_id>/attributes/add/',views.add_product_attribute_view,name='add-product-attribute'),
+    path('admin-panel/product/<int:product_id>/attributes/<int:attr_id>/edit/',views.edit_product_attribute_view,name='edit-product-attribute'),
+    path('admin-panel/product/<int:product_id>/attributes/<int:attr_id>/delete/', views.delete_product_attribute_view, name='delete-product-attribute'),
     #Обычные страницы
     path('catalog/', views.catalog_view, name="catalog"),
     path('', views.index, name="index"),
