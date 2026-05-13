@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %}Контакты{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="text-center mb-5">
+    <h1 class="display-5 fw-bold text-dark">Контактная информация</h1>
+    <p class="lead text-muted">Свяжитесь с нами — мы всегда рады помочь!</p>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-lg-6">
+      <div class="card border-0 shadow-sm rounded-3 h-100">
+        <div class="card-body">
+          <h4 class="mt-4 mb-2 text-success">📞 Телефон</h4>
+          <p class="fs-5">
+            <a href="tel:+74951234567" class="text-decoration-none text-dark">+7 (495) 123-45-67</a>
+          </p>
+        <h4 class="mt-4 mb-2 text-success">Телеграм</h4>
+          <p class="fs-5">
+            <a href="mailto:info@rukodelnitsa.ru" class="text-decoration-none text-dark">@test</a>
+          </p>
+          <h4 class="mt-4 mb-2 text-success">✉️ Email</h4>
+          <p class="fs-5">
+            <a href="mailto:info@rukodelnitsa.ru" class="text-decoration-none text-dark">info@rukodelnitsa.ru</a>
+          </p>
+          <div class="mt-4 pt-3 border-top">
+            <h5 class="text-success">Мы в соцсетях</h5>
+            <p>
+              <a href="https://vk.com/rukodelpoleva" class="text-decoration-none me-3">VK</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+        <div class="col-lg-6">
+      <div class="card border-0 shadow-sm rounded-3">
+        <div class="card-header bg-success text-white">
+          <h5 class="mb-0">Напишите нам</h5>
+        </div>
+        <div class="card-body">
+          <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+              <label for="name" class="form-label">Ваше имя</label>
+              <input type="text" class="form-control" id="name" name="name" required>
+            </div>
+            <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <input type="email" class="form-control" id="email" name="email" required>
+            </div>
+            <div class="mb-3">
+              <label for="message" class="form-label">Сообщение</label>
+              <textarea class="form-control" id="message" name="message" rows="4" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-success w-100">Отправить</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

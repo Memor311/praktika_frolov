@@ -345,6 +345,7 @@ def checkout_view(request):
         initial_address = last_order.address
     if request.method == 'POST':
         address = request.POST.get('address', '').strip()
+        comment = request.POST.get('comment', '').strip()
         if not address:
             messages.error(request, "Укажите адрес доставки.")
             return render(request, 'checkout.html', {'initial_address': initial_address})
@@ -354,7 +355,8 @@ def checkout_view(request):
         order = Order.objects.create(
             user=request.user,
             address=address,
-            status=status_new
+            status=status_new,
+            comment=comment if comment else None,
         )
         for product_id, count in cart.items():
             try:
@@ -512,11 +514,29 @@ def export_sales_report_xlsx(report, date_from=None, date_to=None):
     wb.save(response)
     return response  
 
+def works_view(request):
+    return render(request, 'works.html')
+
+def contacts_view(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        message = request.POST.get('message')
+        messages.success(request, 'Ваше сообщение отправлено!')
+        return redirect('contacts')
+    return render(request, 'contacts.html')
+
 @admin_required
 def edit_order_view(request, order_id):
     order = get_object_or_404(Order, id=order_id)
     if request.method == 'POST':
         action = request.POST.get('action')
+        if action == 'update_comment':
+            comment = request.POST.get('comment', '').strip()
+            order.comment = comment if comment else None
+            order.save()
+            messages.success(request, "Комментарий обновлён.")
+            return redirect('edit-order', order_id=order.id)
         if action == 'add_product':
             product_id = request.POST.get('new_product_id')
             count = request.POST.get('count', '1')

@@ -7,7 +7,21 @@
     <h2>Редактировать заказ #{{ order.id }}</h2>
     <a href="{% url 'admin-orders' %}" class="btn btn-secondary">← Назад к заказам</a>
   </div>
-
+  <div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+      <h5 class="mb-0">Комментарий к заказу</h5>
+    </div>
+    <div class="card-body">
+      <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="update_comment">
+        <textarea name="comment" class="form-control" rows="3">{{ order.comment|default:"" }}</textarea>
+        <div class="mt-2">
+          <button type="submit" class="btn btn-primary btn-sm">Сохранить комментарий</button>
+        </div>
+      </form>
+    </div>
+  </div>
   <!-- Блок: Добавить товар -->
   <div class="card mb-4">
     <div class="card-header bg-success text-white">

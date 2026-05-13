@@ -52,15 +52,15 @@
               <div>
                 <strong>{{ pa.attribute.name }}:</strong> {{ pa.value }}
               </div>
-              <div class="btn-group btn-group-sm">
+              <div class="d-flex gap-2">
                 <!-- Форма редактирования (всплывающая или inline) -->
                 <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editModal{{ pa.id }}">
-                  ✏️ Редактировать
+                  Редактировать
                 </button>
                 <form method="post" action="{% url 'delete-product-attribute' product.id pa.id %}"
                       onsubmit="return confirm('Удалить атрибут?');">
                   {% csrf_token %}
-                  <button type="submit" class="btn btn-outline-danger">🗑️ Удалить</button>
+                  <button type="submit" class="btn btn-outline-danger"> Удалить</button>
                 </form>
               </div>
             </div>

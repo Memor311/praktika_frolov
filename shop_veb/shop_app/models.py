@@ -76,6 +76,7 @@ class Order(models.Model):
     total_price = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     address = models.TextField(blank=True, null=True)
     status = models.ForeignKey('Status', on_delete=models.PROTECT, related_name='orders')
+    comment = models.TextField(null=True)
 
     def calculate_total(self):
         self.total_price = sum(

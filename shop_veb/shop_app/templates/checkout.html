@@ -15,6 +15,12 @@
       <div class="form-text">Адрес взят из вашего профиля или последнего заказа.</div>
       {% endif %}
     </div>
+    <div class="mb-3">
+      <label class="form-label">Комментарий к заказу (опционально)</label>
+      <textarea name="comment" class="form-control" rows="3" placeholder="Например: оставить у двери, звонить за 10 минут...">{{ initial_comment }}</textarea>
+      <div class="form-text">Этот комментарий увидит администратор при обработке заказа.</div>
+    </div>
+
 
     <button type="submit" class="btn btn-success">Подтвердить заказ</button>
     <a href="{% url 'cart' %}" class="btn btn-secondary">← Назад в корзину</a>

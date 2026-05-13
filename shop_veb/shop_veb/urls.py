@@ -54,6 +54,8 @@ urlpatterns = [
     #Обычные страницы
     path('catalog/', views.catalog_view, name="catalog"),
     path('', views.index, name="index"),
+    path('works/', views.works_view, name='works'),
+    path('contacts/', views.contacts_view, name='contacts'),
 
     #Работа с пользователем
     path('register/', views.register_view, name='register'),

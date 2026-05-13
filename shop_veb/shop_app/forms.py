@@ -12,7 +12,6 @@ class CustomUserRegistrationForm(UserCreationForm):
 
     def save(self, commit=True):
         user = super().save(commit=False)
-        # Назначаем роль "пользователь" по умолчанию
         user_role, _ = Role.objects.get_or_create(name='Пользователь')
         user.role = user_role
         if commit:
