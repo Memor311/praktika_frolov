@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: db
--- Время создания: Мар 02 2026 г., 13:10
+-- Время создания: Май 11 2026 г., 09:43
 -- Версия сервера: 9.6.0
 -- Версия PHP: 8.2.28
 
@@ -121,7 +121,15 @@ INSERT INTO `auth_permission` (`id`, `name`, `content_type_id`, `codename`) VALU
 (57, 'Can add product attribute', 15, 'add_productattribute'),
 (58, 'Can change product attribute', 15, 'change_productattribute'),
 (59, 'Can delete product attribute', 15, 'delete_productattribute'),
-(60, 'Can view product attribute', 15, 'view_productattribute');
+(60, 'Can view product attribute', 15, 'view_productattribute'),
+(61, 'Can add Атрибут', 16, 'add_attribute'),
+(62, 'Can change Атрибут', 16, 'change_attribute'),
+(63, 'Can delete Атрибут', 16, 'delete_attribute'),
+(64, 'Can view Атрибут', 16, 'view_attribute'),
+(65, 'Can add Значение атрибута', 17, 'add_attributevalue'),
+(66, 'Can change Значение атрибута', 17, 'change_attributevalue'),
+(67, 'Can delete Значение атрибута', 17, 'delete_attributevalue'),
+(68, 'Can view Значение атрибута', 17, 'view_attributevalue');
 
 -- --------------------------------------------------------
 
@@ -162,6 +170,8 @@ INSERT INTO `django_content_type` (`id`, `app_label`, `model`) VALUES
 (2, 'auth', 'permission'),
 (4, 'contenttypes', 'contenttype'),
 (5, 'sessions', 'session'),
+(16, 'shop_app', 'attribute'),
+(17, 'shop_app', 'attributevalue'),
 (7, 'shop_app', 'category'),
 (8, 'shop_app', 'order'),
 (14, 'shop_app', 'orderproduct'),
@@ -210,7 +220,10 @@ INSERT INTO `django_migrations` (`id`, `app`, `name`, `applied`) VALUES
 (17, 'admin', '0002_logentry_remove_auto_add', '2026-02-24 17:18:15.735969'),
 (18, 'admin', '0003_logentry_add_action_flag_choices', '2026-02-24 17:18:15.892915'),
 (19, 'sessions', '0001_initial', '2026-02-24 17:18:17.887685'),
-(20, 'shop_app', '0002_product_is_active', '2026-02-28 16:11:03.243770');
+(20, 'shop_app', '0002_product_is_active', '2026-02-28 16:11:03.243770'),
+(21, 'shop_app', '0003_attribute_alter_product_photo_and_more', '2026-03-27 17:31:28.923073'),
+(22, 'shop_app', '0004_alter_productattribute_options_and_more', '2026-03-28 03:56:18.046583'),
+(23, 'shop_app', '0005_order_comment', '2026-05-10 07:23:45.332572');
 
 -- --------------------------------------------------------
 
@@ -229,7 +242,10 @@ CREATE TABLE `django_session` (
 --
 
 INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALUES
-('n3tatmjgrh0idaqfz4bh75alicasktb3', '.eJxVjEEOwiAQRe_C2pAiwwgu3XsGMjCDVA1NSrsy3l2bdKHb_977LxVpXWpcu8xxZHVWRh1-t0T5IW0DfKd2m3Se2jKPSW-K3mnX14nledndv4NKvX5rB3lwXMAmBFcAoQw2BaGj5Yy2ZCOSwIkPNp0CejJghAOh8Q4BmdX7A-SYN-E:1vx1Aq:Rwsy5HlVJ0rf5bkrJxb6SAhu08V8CQjpt5f6QdtFFjY', '2026-03-16 11:10:52.592993');
+('1vtebib30msfqzhro6j3b6hib17vuscp', '.eJxVjEEOwiAQAP_C2RChLKBH776BLLurVA0kpT0Z_25IetDrzGTeKuG2lrR1WdLM6qyMOvyyjPSUOgQ_sN6bplbXZc56JHq3XV8by-uyt3-Dgr2MrbFkOAJwEMQowCTuFMlZFhcDGSc4UQZvmT1MQSYT4eg8Ihrnb159vvCvN_8:1wLzso:FQYKNDeoL_3flBj-jyFYss0lEE3o36m4zLNE1AS0XTY', '2026-05-24 08:51:30.394187'),
+('gnzlp2fjf60xq1gjz1vnhf3b8ejkne8f', '.eJxVjEEOwiAQAP_C2RChLKBH776BLLurVA0kpT0Z_25IetDrzGTeKuG2lrR1WdLM6qyMOvyyjPSUOgQ_sN6bplbXZc56JHq3XV8by-uyt3-Dgr2MrbFkOAJwEMQowCTuFMlZFhcDGSc4UQZvmT1MQSYT4eg8Ihrnb159vvCvN_8:1wI42c:YwePc-fJIXpPSkkOSV3EZ80o_Dw20pJ-AXG6v952t40', '2026-05-13 12:29:22.102111'),
+('n3tatmjgrh0idaqfz4bh75alicasktb3', '.eJxVjEEOwiAQRe_C2pAiwwgu3XsGMjCDVA1NSrsy3l2bdKHb_977LxVpXWpcu8xxZHVWRh1-t0T5IW0DfKd2m3Se2jKPSW-K3mnX14nledndv4NKvX5rB3lwXMAmBFcAoQw2BaGj5Yy2ZCOSwIkPNp0CejJghAOh8Q4BmdX7A-SYN-E:1vx1Aq:Rwsy5HlVJ0rf5bkrJxb6SAhu08V8CQjpt5f6QdtFFjY', '2026-03-16 11:10:52.592993'),
+('qfryeqdm0ut9dgi7hu3721k59vhjfdxb', '.eJxVjkEOgjAQRe_StWmc0pbapXvOQIaZUVADSVtWhLtLExa6_e_l5W-qx7WM_Zol9ROrqEBdfrcB6S1zBfzC-bloWuaSpkFXRZ80625h-dxP9y8wYh5rFgwBB-e4FcQgjknsLZA1LDa0BFawocF5w-xd00oDwV2tR0Sw_uGPKGEqKm7Hwwj7_gVXWzwr:1w6Aub:XlT3_vZIZ2hFScQdR2oN-8f9k60WPfLhd9vIw-pE1Zo', '2026-04-10 17:23:57.229794');
 
 -- --------------------------------------------------------
 
@@ -254,7 +270,31 @@ INSERT INTO `products_log` (`id`, `productsName`, `productId`, `actions`, `date_
 (2, 'Пион фиолетовый', 1, 'Товар деактивирован; ', '2026-03-01 17:09:25'),
 (3, 'Пион фиолетовый', 1, 'Товар активирован; ', '2026-03-01 17:09:39'),
 (4, 'Пион фиолетовый', 1, 'Товар деактивирован ', '2026-03-01 17:44:15'),
-(5, 'Пион фиолетовый', 1, 'Товар активирован ', '2026-03-01 17:44:17');
+(5, 'Пион фиолетовый', 1, 'Товар активирован ', '2026-03-01 17:44:17'),
+(6, 'Пион фиолетовый', 1, 'Цена изменена с 1201.00 на 1200.00', '2026-04-28 12:32:08'),
+(7, 'Упаковка красная', 3, 'Товар деактивирован ', '2026-04-29 12:27:30');
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `shop_app_attribute`
+--
+
+CREATE TABLE `shop_app_attribute` (
+  `id` int NOT NULL,
+  `name` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Дамп данных таблицы `shop_app_attribute`
+--
+
+INSERT INTO `shop_app_attribute` (`id`, `name`) VALUES
+(6, 'Материал'),
+(5, 'Размер'),
+(1, 'Размер цветка'),
+(8, 'Тип упаковки'),
+(2, 'Цвет');
 
 -- --------------------------------------------------------
 
@@ -287,17 +327,20 @@ CREATE TABLE `shop_app_order` (
   `total_price` decimal(12,2) NOT NULL,
   `address` longtext,
   `status_id` int NOT NULL,
-  `user_id` int NOT NULL
+  `user_id` int NOT NULL,
+  `comment` longtext
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Дамп данных таблицы `shop_app_order`
 --
 
-INSERT INTO `shop_app_order` (`id`, `created_at`, `total_price`, `address`, `status_id`, `user_id`) VALUES
-(1, '2026-02-28 15:58:07.981514', 8907.00, 'Улица Пушкина, дом колотушкина', 3, 1),
-(4, '2026-03-01 11:10:31.577535', 4904.00, 'Дом колотушкина', 3, 2),
-(5, '2026-03-02 11:10:31.802653', 8607.00, 'Дом колотушкина', 1, 2);
+INSERT INTO `shop_app_order` (`id`, `created_at`, `total_price`, `address`, `status_id`, `user_id`, `comment`) VALUES
+(1, '2026-02-28 15:58:07.981514', 9800.00, 'Улица Пушкина, дом колотушкина', 3, 1, 'Допустим12'),
+(4, '2026-03-01 11:10:31.577535', 4904.00, 'Дом колотушкина', 3, 2, NULL),
+(5, '2026-03-02 11:10:31.802653', 8607.00, 'Дом колотушкина', 1, 2, NULL),
+(6, '2026-04-27 10:12:14.425642', 1301.00, 'Улица Пушкина, дом колотушкина', 1, 1, NULL),
+(7, '2026-05-10 08:21:19.852981', 5000.00, 'Улица Пушкина, дом колотушкина', 1, 1, '3fw4');
 
 -- --------------------------------------------------------
 
@@ -317,12 +360,16 @@ CREATE TABLE `shop_app_orderproduct` (
 --
 
 INSERT INTO `shop_app_orderproduct` (`id`, `count`, `order_id`, `product_id`) VALUES
-(1, 7, 1, 1),
-(3, 5, 1, 2),
+(1, 8, 1, 1),
+(3, 2, 1, 2),
 (7, 1, 4, 2),
 (8, 2, 5, 2),
 (9, 4, 4, 1),
-(10, 7, 5, 1);
+(10, 7, 5, 1),
+(11, 1, 6, 2),
+(12, 1, 6, 1),
+(14, 4, 7, 1),
+(15, 2, 7, 2);
 
 -- --------------------------------------------------------
 
@@ -344,8 +391,9 @@ CREATE TABLE `shop_app_product` (
 --
 
 INSERT INTO `shop_app_product` (`id`, `name`, `price`, `photo`, `category_id`, `is_active`) VALUES
-(1, 'Пион фиолетовый', 1201.00, 'products/product_1_61b7de7446d64386b07b90425fcd8876.png', 1, 1),
-(2, 'Упаковка синяя', 100.00, 'products/product_2_cb0fb60adf634411bc3f8d46fb55a30a.png', 2, 1);
+(1, 'Пион фиолетовый', 1200.00, 'products/product_1_61b7de7446d64386b07b90425fcd8876.png', 1, 1),
+(2, 'Упаковка синяя', 100.00, 'products/product_2_cb0fb60adf634411bc3f8d46fb55a30a.png', 2, 1),
+(3, 'Упаковка красная', 100.00, '', 2, 0);
 
 --
 -- Триггеры `shop_app_product`
@@ -382,10 +430,19 @@ DELIMITER ;
 
 CREATE TABLE `shop_app_productattribute` (
   `id` int NOT NULL,
-  `attribute_name` varchar(100) NOT NULL,
-  `attribute_value` varchar(255) NOT NULL,
-  `product_id` int NOT NULL
+  `product_id` int NOT NULL,
+  `attribute_id` int NOT NULL,
+  `value` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Дамп данных таблицы `shop_app_productattribute`
+--
+
+INSERT INTO `shop_app_productattribute` (`id`, `product_id`, `attribute_id`, `value`) VALUES
+(2, 1, 1, '100'),
+(4, 1, 2, 'Фиолетовый'),
+(5, 3, 2, 'Красный');
 
 -- --------------------------------------------------------
 
@@ -406,7 +463,8 @@ CREATE TABLE `shop_app_review` (
 --
 
 INSERT INTO `shop_app_review` (`id`, `text`, `score`, `created_at`, `user_id`) VALUES
-(3, 'Очень хороший букет получился. Доставили вовремя, рекомендую!', 5, '2026-03-01 18:00:57.127818', 1);
+(3, 'Очень хороший букет получился. Доставили вовремя, рекомендую!', 5, '2026-03-01 18:00:57.127818', 1),
+(5, '43562562', 1, '2026-05-10 08:06:13.922755', 1);
 
 -- --------------------------------------------------------
 
@@ -419,6 +477,13 @@ CREATE TABLE `shop_app_reviewphoto` (
   `photo` varchar(100) DEFAULT NULL,
   `review_id` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Дамп данных таблицы `shop_app_reviewphoto`
+--
+
+INSERT INTO `shop_app_reviewphoto` (`id`, `photo`, `review_id`) VALUES
+(2, 'reviews/review_5_5ab4354e51c846318429cdce8b524789.jpg', 5);
 
 -- --------------------------------------------------------
 
@@ -488,7 +553,7 @@ CREATE TABLE `shop_app_user` (
 --
 
 INSERT INTO `shop_app_user` (`id`, `password`, `last_login`, `is_superuser`, `username`, `first_name`, `last_name`, `email`, `is_staff`, `is_active`, `date_joined`, `phone`, `telegram`, `created_at`, `role_id`) VALUES
-(1, 'pbkdf2_sha256$600000$YH4ywip91MobfQXxkBzIMa$LWaabzIhHnDZuxWKjSJ4zRUHwcLR86Jsq76zlw1qArc=', '2026-03-02 11:10:52.301350', 1, 'memori23', 'Кирил', 'Егоров', 'mer1@ml.com', 1, 1, '2026-02-28 15:39:33.416602', '79998887654', 'qsdfqrwq', '2026-02-28 15:39:33.416602', 2),
+(1, 'pbkdf2_sha256$600000$jEKLQoqQx2UPklKySM4js2$CmDDI+L6Hm0AJEz5NfKu52JiPw393U2a0BttoR/Kg48=', '2026-05-10 08:51:30.312986', 1, 'memori23', 'Кирил', 'Егоров', 'mer1@ml.com', 1, 1, '2026-02-28 15:39:33.416602', '79998887654', 'qsdfqrwq', '2026-02-28 15:39:33.416602', 2),
 (2, 'pbkdf2_sha256$600000$GycY2S0iROtmDcANaF5mer$cK0Ks4qsJ+51whBjCnv8iNtWaIUB55dFLDVhuwLBFPo=', '2026-03-02 11:03:40.280870', 0, 'Pasportmem', 'Андрей', 'Нечаев', 'gdsgsd@hdf.com', 0, 1, '2026-03-02 11:03:37.931032', '80005553535', 'sdgswwqg', '2026-03-02 11:03:37.931032', 1);
 
 -- --------------------------------------------------------
@@ -576,6 +641,13 @@ ALTER TABLE `products_log`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Индексы таблицы `shop_app_attribute`
+--
+ALTER TABLE `shop_app_attribute`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `name` (`name`);
+
+--
 -- Индексы таблицы `shop_app_category`
 --
 ALTER TABLE `shop_app_category`
@@ -610,7 +682,9 @@ ALTER TABLE `shop_app_product`
 --
 ALTER TABLE `shop_app_productattribute`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `shop_app_productattribut_product_id_attribute_nam_1bb76a5a_uniq` (`product_id`,`attribute_name`);
+  ADD UNIQUE KEY `shop_app_productattribute_product_id_attribute_id_d59c92ab_uniq` (`product_id`,`attribute_id`),
+  ADD KEY `shop_app_productattribute_product_id_98413523` (`product_id`),
+  ADD KEY `shop_app_productattr_attribute_id_fdf4e94a_fk_shop_app_` (`attribute_id`);
 
 --
 -- Индексы таблицы `shop_app_review`
@@ -684,7 +758,7 @@ ALTER TABLE `auth_group_permissions`
 -- AUTO_INCREMENT для таблицы `auth_permission`
 --
 ALTER TABLE `auth_permission`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=69;
 
 --
 -- AUTO_INCREMENT для таблицы `django_admin_log`
@@ -696,19 +770,25 @@ ALTER TABLE `django_admin_log`
 -- AUTO_INCREMENT для таблицы `django_content_type`
 --
 ALTER TABLE `django_content_type`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT для таблицы `django_migrations`
 --
 ALTER TABLE `django_migrations`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT для таблицы `products_log`
 --
 ALTER TABLE `products_log`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT для таблицы `shop_app_attribute`
+--
+ALTER TABLE `shop_app_attribute`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT для таблицы `shop_app_category`
@@ -720,7 +800,7 @@ ALTER TABLE `shop_app_category`
 -- AUTO_INCREMENT для таблицы `shop_app_order`
 --
 ALTER TABLE `shop_app_order`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT для таблицы `shop_app_orderproduct`
@@ -732,13 +812,13 @@ ALTER TABLE `shop_app_orderproduct`
 -- AUTO_INCREMENT для таблицы `shop_app_product`
 --
 ALTER TABLE `shop_app_product`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT для таблицы `shop_app_productattribute`
 --
 ALTER TABLE `shop_app_productattribute`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT для таблицы `shop_app_review`
@@ -750,7 +830,7 @@ ALTER TABLE `shop_app_review`
 -- AUTO_INCREMENT для таблицы `shop_app_reviewphoto`
 --
 ALTER TABLE `shop_app_reviewphoto`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT для таблицы `shop_app_role`
@@ -830,6 +910,7 @@ ALTER TABLE `shop_app_product`
 -- Ограничения внешнего ключа таблицы `shop_app_productattribute`
 --
 ALTER TABLE `shop_app_productattribute`
+  ADD CONSTRAINT `shop_app_productattr_attribute_id_fdf4e94a_fk_shop_app_` FOREIGN KEY (`attribute_id`) REFERENCES `shop_app_attribute` (`id`),
   ADD CONSTRAINT `shop_app_productattr_product_id_98413523_fk_shop_app_` FOREIGN KEY (`product_id`) REFERENCES `shop_app_product` (`id`);
 
 --
