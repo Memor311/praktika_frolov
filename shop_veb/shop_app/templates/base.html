@@ -15,10 +15,14 @@
 
 <body class="d-flex flex-column min-vh-100" style="background-color: #ffffff;">
   <header>
-    <nav class="navbar navbar-expand-lg bg-danger-darker border-bottom border-body mb-2">
+    <nav class="navbar navbar-expand-lg border-bottom border-body mb-2" style="background-color: #b781cf">
       <div class="container-fluid">
-        <!-- Логотип -->
-        <a class="navbar-brand" href="/">ЦВЕТОЧНЫЙ МАГАЗИН</a>
+        <!-- Логотип в шапке -->
+        <a class="navbar-brand p-0 me-3" href="/">
+          <img src="/media//logo.png" alt="Рукодельница" 
+               style="height: 45px; width: 45px; object-fit: cover;" 
+               class="rounded-circle border border-light">
+        </a>
 
         <!-- Бургер-кнопка для мобильных -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -31,13 +35,13 @@
           <!-- Левое меню -->
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'catalog' %}">Каталог</a>
+              <a class="nav-link text-light" href="{% url 'catalog' %}">Каталог</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'works' %}">Наши работы</a>
+              <a class="nav-link text-light" href="{% url 'works' %}">Наши работы</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'contacts' %}">Контакты</a>
+              <a class="nav-link text-light" href="{% url 'contacts' %}">Контакты</a>
             </li>
           </ul>
 
@@ -47,27 +51,27 @@
             <li class="nav-item ms-2 ms-lg-3">
               <form method="post" action="{% url 'logout' %}" class="d-inline">
                 {% csrf_token %}
-                <button type="submit" class="btn btn-link nav-link p-0 text-decoration-none">
+                <button type="submit" class="btn btn-link nav-link p-0 text-light text-decoration-none">
                   Выйти
                 </button>
               </form>
             </li>
             {% else %}
             <li class="nav-item ms-2 ms-lg-3">
-              <a class="nav-link p-0 text-decoration-none" href="{% url 'login' %}">Войти</a>
+              <a class="nav-link p-0 text-decoration-none text-light" href="{% url 'login' %}">Войти</a>
             </li>
             {% endif %}
 
             <!-- Админ-панель -->
             {% if user.is_authenticated and user.role.name == 'Администратор' %}
             <li class="nav-item ms-2 ms-lg-3">
-              <a class="nav-link p-0 text-decoration-none" href="{% url 'admin-panel' %}">Админ-панель</a>
+              <a class="nav-link p-0 text-decoration-none text-light" href="{% url 'admin-panel' %}">Админ-панель</a>
             </li>
             {% endif %}
 
             <!-- Корзина -->
             <li class="nav-item ms-2 ms-lg-3">
-              <a href="{% url 'cart' %}" class="nav-link text-dark p-0 text-decoration-none">
+              <a href="{% url 'cart' %}" class="nav-link text-light p-0 text-decoration-none">
                 Корзина
                 {% if cart_total_count > 0 %}
                 <span class="badge bg-danger">{{ cart_total_count }}</span>
@@ -76,7 +80,7 @@
             </li>
             {% if user.is_authenticated %}
             <li class="nav-item ms-2 ms-lg-3">
-              <a href="{% url 'profile' %}" class="nav-link ml-1 text-dark p-0 text-decoration-none">Профиль</a>
+              <a href="{% url 'profile' %}" class="nav-link ml-1 text-light p-0 text-decoration-none">Профиль</a>
             </li>
             {% endif %}
           </ul>
@@ -84,6 +88,7 @@
       </div>
     </nav>
   </header>
+  
   <div id="django-messages" style="display:none;">
     {% if messages %}
     [
@@ -98,87 +103,94 @@
     []
     {% endif %}
   </div>
-<main class="flex-grow-1 position-relative">
-  <!-- Левое изображение (верхний левый угол) -->
-  <img src="/media/flower.png"
+
+  <main class="flex-grow-1 position-relative">
+    <!-- Левое изображение (верхний левый угол) -->
+    <img src="/media/flower.png"
        class="position-absolute opacity-25"
        style="top: 15%; left: 5%; height: 20%; object-fit: contain; pointer-events: none;"
        alt="Декоративный элемент слева">
 
-  <!-- Правое изображение (верхний правый угол) -->
-  <img src="/media/flower.png"
+    <!-- Правое изображение (верхний правый угол) -->
+    <img src="/media/flower.png"
        class="position-absolute opacity-25"
        style="top: 15%; right: 9%; rotate: 180deg; height: 20%; object-fit: contain; pointer-events: none;"
        alt="Декоративный элемент справа">
 
-  <!-- Основной контент -->
-  <div class="position-relative z-1">
-    {% block content %}
-    {% endblock %}
-  </div>
-</main>
+    <!-- Основной контент -->
+    <div class="position-relative z-1">
+      {% block content %}
+      {% endblock %}
+    </div>
+  </main>
 
   <!-- Подвал -->
- <footer class="mt-auto bg-dark text-light py-4">
-  <div class="container">
-    <div class="row g-4">
-      <!-- Логотип и описание -->
-      <div class="col-lg-4 col-md-6">
-        <h5 class="mb-3">ЦВЕТОЧНЫЙ МАГАЗИН «РУКОДЕЛЬНИЦА»</h5>
-        <p class="text-muted small">
-          Создаём уникальные букеты с любовью и вниманием к деталям.
-        </p>
-      </div>
-
-      <!-- Навигация -->
-      <div class="col-lg-2 col-md-3 col-6">
-        <h6 class="text-uppercase mb-3">Навигация</h6>
-        <ul class="list-unstyled">
-          <li><a href="{% url 'index' %}" class="text-decoration-none text-light">Главная</a></li>
-          <li><a href="{% url 'catalog' %}" class="text-decoration-none text-light">Каталог</a></li>
-          <li><a href="{% url 'works' %}" class="text-decoration-none text-light">Наши работы</a></li>
-          <li><a href="{% url 'contacts' %}" class="text-decoration-none text-light">Контакты</a></li>
-        </ul>
-      </div>
-
-      <!-- Контакты -->
-      <div class="col-lg-3 col-md-6">
-        <h6 class="text-uppercase mb-3">Контакты</h6>
-        <ul class="list-unstyled small">
-          <li>Телеграм: @test </li>
-          <li class="mt-2">
-            <a href="tel:+74951234567" class="text-decoration-none text-light">+7 (495) 123-45-67</a>
-          </li>
-          <li class="mt-2">
-            <a href="mailto:info@rukodelnitsa.ru" class="text-decoration-none text-light">info@rukodelnitsa.ru</a>
-          </li>
-        </ul>
-      </div>
-
-      <!-- Соцсети -->
-      <div class="col-lg-3 col-md-6">
-        <h6 class="text-uppercase mb-3">Мы в соцсетях</h6>
-        <div>
-          <a href="https://vk.com/rukodelpoleva" target="_blank" rel="noopener" 
-             class="d-inline-block text-light me-3" style="font-size: 1.8rem;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M13.737 19.5c-.217 0-.617-.183-.617-.633v-3.55c0-.25.15-.45.4-.45h.05c.967 0 1.75.467 2.067 1.417.217.65.1 1.15-.183 1.15-.234 0-.367-.167-.617-.917-.25-.75-.8-1.167-1.75-1.167h-.15c-1.45 0-2.433.933-2.7 2.383-.15.85.217 1.317.733 1.317.3 0 .483-.217.6-.567.15-.45.35-.683.667-.683.35 0 .533.283.633.633.1.35.05.7-.15 1.3-.35 1.05-1.1 1.6-2.05 1.6zm-3.987-4.55c-.3 0-.5-.2-.5-.5 0-.3.2-.5.5-.5.3 0 .5.2.5.5 0 .3-.2.5-.5.5zm5.55-2.9c-.3 0-.5-.2-.5-.5 0-.3.2-.5.5-.5.3 0 .5.2.5.5 0 .3-.2.5-.5.5zm-7.8 2.9c-.3 0-.5-.2-.5-.5 0-.3.2-.5.5-.5.3 0 .5.2.5.5 0 .3-.2.5-.5.5zm-1.5-2.9c-.3 0-.5-.2-.5-.5 0-.3.2-.5.5-.5.3 0 .5.2.5.5 0 .3-.2.5-.5.5z"/>
-              <path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm4.85 14.85c-.3.3-.65.3-1.1.15-.9-.3-1.55-.95-2.5-1.25-.65-.2-1.35-.15-1.85.35-.3.3-.65.35-1.05.1-.95-.6-1.65-1.5-2.75-1.8-.9-.25-1.85.1-2.25.95-.2.4-.2.85.15 1.2.75.75 1.95 1.05 2.95 1.55.7.35 1.35.85 2.15 1.05.8.2 1.65-.1 2.15-.75.3-.4.3-.9.05-1.3-.25-.4-.7-.65-1.15-.65-.45 0-.85.25-1.1.65-.25.4-.2.9.15 1.25.35.35.9.5 1.35.35.45-.15.75-.55.75-1 0-.45-.3-.85-.75-.85-.45 0-.85.4-.85.85 0 .45.4.85.85.85.45 0 .85-.4.85-.85 0-.45-.4-.85-.85-.85z"/>
-            </svg>
+  <footer class="mt-auto bg-dark text-light py-4">
+    <div class="container">
+      <div class="row g-4">
+        <!-- Логотип и описание в подвале -->
+        <div class="col-lg-4 col-md-6">
+          <a href="/" class="d-inline-block mb-3">
+            <img src="/media//logo.png" alt="Рукодельница" 
+                 style="height: 80px; width: 80px; object-fit: cover;" 
+                 class="rounded-circle border border-secondary">
           </a>
+          <p class="small">
+            Создаём уникальные букеты с любовью и вниманием к деталям.
+          </p>
         </div>
-        <p class=" small mt-2">Подписывайтесь на нашу страницу ВКонтакте!</p>
+
+        <!-- Навигация -->
+        <div class="col-lg-2 col-md-3 col-6">
+          <h6 class="text-uppercase mb-3">Навигация</h6>
+          <ul class="list-unstyled">
+            <li><a href="{% url 'index' %}" class="text-decoration-none text-light">Главная</a></li>
+            <li><a href="{% url 'catalog' %}" class="text-decoration-none text-light">Каталог</a></li>
+            <li><a href="{% url 'works' %}" class="text-decoration-none text-light">Наши работы</a></li>
+            <li><a href="{% url 'contacts' %}" class="text-decoration-none text-light">Контакты</a></li>
+          </ul>
+        </div>
+
+        <!-- Контакты -->
+        <div class="col-lg-3 col-md-6">
+          <h6 class="text-uppercase mb-3">Контакты</h6>
+          <ul class="list-unstyled small text-muted">
+            <li>Телеграм: @test </li>
+            <li class="mt-2">
+              <a href="tel:+74951234567" class="text-decoration-none text-light">+7 (495) 123-45-67</a>
+            </li>
+            <li class="mt-2">
+              <a href="mailto:info@rukodelnitsa.ru" class="text-decoration-none text-light">info@rukodelnitsa.ru</a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Соцсети -->
+        <div class="col-lg-3 col-md-6">
+          <h6 class="text-uppercase mb-3">Мы в соцсетях</h6>
+          <div>
+            <a href="https://vk.com/rukodelpoleva" target="_blank" rel="noopener" 
+               class="d-inline-block text-light me-3" style="font-size: 1.8rem;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M13.737 19.5c-.217 0-.617-.183-.617-.633v-3.55c0-.25.15-.45.4-.45h.05c.967 0 1.75.467 2.067 1.417.217.65.1 1.15-.183 1.15-.234 0-.367-.167-.617-.917-.25-.75-.8-1.167-1.75-1.167h-.15c-1.45 0-2.433.933-2.7 2.383-.15.85.217 1.317.733 1.317.3 0 .483-.217.6-.567.15-.45.35-.683.667-.683.35 0 .533.283.633.633.1.35.05.7-.15 1.3-.35 1.05-1.1 1.6-2.05 1.6zm-3.987-4.55c-.3 0-.5-.2-.5-.5 0-.3.2-.5.5-.5.3 0 .5.2.5.5 0 .3-.2.5-.5.5zm5.55-2.9c-.3 0-.5-.2-.5-.5 0-.3.2-.5.5-.5.3 0 .5.2.5.5 0 .3-.2.5-.5.5zm-7.8 2.9c-.3 0-.5-.2-.5-.5 0-.3.2-.5.5-.5.3 0 .5.2.5.5 0 .3-.2.5-.5.5zm-1.5-2.9c-.3 0-.5-.2-.5-.5 0-.3.2-.5.5-.5.3 0 .5.2.5.5 0 .3-.2.5-.5.5z"/>
+                <path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm4.85 14.85c-.3.3-.65.3-1.1.15-.9-.3-1.55-.95-2.5-1.25-.65-.2-1.35-.15-1.85.35-.3.3-.65.35-1.05.1-.95-.6-1.65-1.5-2.75-1.8-.9-.25-1.85.1-2.25.95-.2.4-.2.85.15 1.2.75.75 1.95 1.05 2.95 1.55.7.35 1.35.85 2.15 1.05.8.2 1.65-.1 2.15-.75.3-.4.3-.9.05-1.3-.25-.4-.7-.65-1.15-.65-.45 0-.85.25-1.1.65-.25.4-.2.9.15 1.25.35.35.9.5 1.35.35.45-.15.75-.55.75-1 0-.45-.3-.85-.75-.85-.45 0-.85.4-.85.85 0 .45.4.85.85.85.45 0 .85-.4.85-.85 0-.45-.4-.85-.85-.85z"/>
+              </svg>
+            </a>
+          </div>
+          <p class="small mt-2 text-muted">Подписывайтесь на нашу страницу ВКонтакте!</p>
+        </div>
+      </div>
+
+      <hr class="my-4 bg-secondary">
+
+      <div class="text-center small text-muted">
+        &copy; 2026 Цветочный магазин «Рукодельница». Все права защищены.
       </div>
     </div>
+  </footer>
 
-    <hr class="my-4 bg-secondary">
-
-    <div class="text-center small">
-      &copy; 2026 Цветочный магазин «Рукодельница». Все права защищены.
-    </div>
-  </div>
-</footer>
-  <script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+  <script defer>
     function showToast(message, type = 'info') {
       let bgColor = '#0d6efd';
       if (type.includes('success')) bgColor = '#198754';
@@ -228,6 +240,5 @@
     });
   </script>
 </body>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-  integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+
 </html>

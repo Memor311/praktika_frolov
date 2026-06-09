@@ -49,7 +49,8 @@ def admin_required(view_func):
 
 def index(request):
     reviews = Review.objects.all()
-    return render(request, 'index.html', {'reviews': reviews})
+    popular_products = Product.objects.filter(is_active=True).all()[:8]
+    return render(request, 'index.html', {'reviews': reviews,'popular_products': popular_products})
 
 @login_required
 def add_site_review_view(request):
@@ -696,17 +697,34 @@ def add_product_attribute_view(request, product_id):
 @admin_required
 def edit_product_attribute_view(request, product_id, attr_id):
     product = get_object_or_404(Product, id=product_id)
-    attr = get_object_or_404(ProductAttribute, id=attr_id, product=product)
-    
+    attribute_obj = get_object_or_404(ProductAttribute, id=attr_id, product=product)
+    all_attributes = Attribute.objects.all()
+
     if request.method == 'POST':
-        attr.attribute_id = request.POST.get('attribute')
-        attr.value = request.POST.get('value', '').strip()
-        attr.save()
-        messages.success(request, "Атрибут обновлён.")
-        return redirect('product-attributes', product_id=product_id)
-    
-    # Для GET — редирект на страницу списка (редактирование через форму на той же странице)
-    return redirect('product-attributes', product_id=product_id)
+        attr_id_new = request.POST.get('attribute')
+        value = request.POST.get('value', '').strip()
+
+        if not attr_id_new or not value:
+            messages.error(request, 'Все поля обязательны для заполнения.')
+        else:
+            # Проверяем дубликаты (кроме текущего атрибута)
+            if ProductAttribute.objects.filter(
+                product=product,
+                attribute_id=attr_id_new
+            ).exclude(id=attr_id).exists():
+                messages.warning(request, 'Этот атрибут уже задан для товара.')
+            else:
+                attribute_obj.attribute_id = attr_id_new
+                attribute_obj.value = value
+                attribute_obj.save()
+                messages.success(request, 'Атрибут успешно обновлён.')
+                return redirect('product-attributes', product_id=product.id)
+    context = {
+        'product': product,
+        'attribute_obj': attribute_obj,
+        'all_attributes': all_attributes,
+    }
+    return render(request, 'shop/admin-panel/products/edit_product_attribute.html', context)
 
 @admin_required
 def delete_product_attribute_view(request, product_id, attr_id):

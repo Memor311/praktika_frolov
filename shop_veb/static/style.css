@@ -1,5 +1,5 @@
 .bg-danger-darker {
-    background-color: #ca95e2 !important;
+    background-color: #b781cf !important;
 }
 .cart-text-title{
     font-size: 35px;
@@ -13,4 +13,8 @@ a{
 
 .main{
     min-height: 100vh;
+}
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.15) !important;
 }

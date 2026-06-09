@@ -3,56 +3,143 @@
 
 {% block content %}
 <div class="container py-5">
+  <!-- Заголовок страницы -->
   <div class="text-center mb-5">
-    <h1 class="display-5 fw-bold text-dark">Примеры наших работ</h1>
-    <p class="lead text-muted">Уникальные букеты и композиции, созданные с любовью</p>
+    <h1 class="display-4 fw-bold text-dark mb-3">Примеры наших работ</h1>
+    <p class="lead text-muted mx-auto" style="max-width: 600px;">
+      Уникальные букеты и композиции, созданные с любовью, вниманием к деталям и индивидуальным подходом.
+    </p>
   </div>
 
-  <div class="row g-4">
+  <!-- Единая сетка работ -->
+  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-5">
+    
     <!-- Работа 1 -->
-    <div class="col-md-6 col-lg-4">
-      <div class="card h-100 shadow-sm border-0 rounded-3 overflow-hidden">
-        <img src="https://picsum.photos/600/400?random=1" class="card-img-top" alt="Пример работы 1">
-        <div class="card-body d-flex flex-column">
-          <h5 class="card-title">Романтический букет</h5>
-          <p class="card-text text-muted flex-grow-1">
-            Нежная композиция из роз, эустом и зелени в пастельных тонах.
+    <div class="col">
+      <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden hover-lift">
+        <div class="img-wrapper">
+          <img src="https://sun9-65.userapi.com/s/v1/ig2/uB6cxh-9_xxLmxpAAYJudbIU6t2KFwGj50mFxWVCz5DTYgF-zea3lP6Cxia1K3ek4dOnNeKnd3i28bLSBTNLrzW6.jpg?quality=95&as=32x43,48x64,72x96,108x144,160x213,240x320,360x480,480x640,540x720,640x853,720x960,1080x1440,1280x1707,1440x1920,1920x2560&from=bu&u=3pEb53hHXghnCBxmW1PDd2d3n1IFDO_ZHm07ZbpgNDo&cs=1920x0" 
+               class="card-img-top w-100" alt="Белоснежные розы">
+        </div>
+        <div class="card-body d-flex flex-column justify-content-center text-center p-4">
+          <p class="card-text text-muted mb-0 fst-italic">
+            Воздушное облако из белоснежных роз. Символ чистоты и нежности, который никогда не завянет и будет радовать глаз годами.
           </p>
         </div>
       </div>
     </div>
 
     <!-- Работа 2 -->
-    <div class="col-md-6 col-lg-4">
-      <div class="card h-100 shadow-sm border-0 rounded-3 overflow-hidden">
-        <img src="https://picsum.photos/600/400?random=2" class="card-img-top" alt="Пример работы 2">
-        <div class="card-body d-flex flex-column">
-          <h5 class="card-title">Свадебный венок</h5>
-          <p class="card-text text-muted flex-grow-1">
-            Элегантный венок из белых цветов и кружев для невесты.
+    <div class="col">
+      <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden hover-lift">
+        <div class="img-wrapper">
+          <img src="https://sun9-47.userapi.com/s/v1/ig2/pO0_NqeEfLHLg12D5Ve9dWXR_wUTbYvyqVv85C6rwGPeIUDRLlPkW7s9xYPWYt3dr8Lbu-tkF7NAd6TtyuA6ttdn.jpg?quality=95&as=32x40,48x60,72x90,108x135,160x200,240x300,360x450,480x600,540x675,640x800,720x900,1080x1350,1280x1600,1440x1800,2048x2560&from=bu&u=LKu0SuSixiZuDdmNK-vXfgwD9O-zqkc1bl8KQnKsaJU&cs=2048x0" 
+               class="card-img-top w-100" alt="Лазурно-белая композиция">
+        </div>
+        <div class="card-body d-flex flex-column justify-content-center text-center p-4">
+          <p class="card-text text-muted mb-0 fst-italic">
+            Утонченная композиция в лазурно-белых тонах с мерцающими акцентами. Создает образ сказочной невесты.
           </p>
         </div>
       </div>
     </div>
 
     <!-- Работа 3 -->
-    <div class="col-md-6 col-lg-4">
-      <div class="card h-100 shadow-sm border-0 rounded-3 overflow-hidden">
-        <img src="https://picsum.photos/600/400?random=3" class="card-img-top" alt="Пример работы 3">
-        <div class="card-body d-flex flex-column">
-          <h5 class="card-title">Подарочная корзина</h5>
-          <p class="card-text text-muted flex-grow-1">
-            Роскошная корзина с сезонными цветами и упаковкой ручной работы.
+    <div class="col">
+      <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden hover-lift">
+        <div class="img-wrapper">
+          <img src="https://sun9-32.userapi.com/s/v1/ig2/L30mFyVLCU-fBlJFC8kn16fBX6oVDJUKVsndTxwkKwrKXyMqrswoLNsKfpA9sYbyOZ46pzwA1w2upV4ds2ei7Qcd.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,2560x1920&from=bu&cs=2560x0" 
+               class="card-img-top w-100" alt="Фиолетовый шик">
+        </div>
+        <div class="card-body d-flex flex-column justify-content-center text-center p-4">
+          <p class="card-text text-muted mb-0 fst-italic">
+            Королевский шик в глубоких фиолетовых оттенках. Объемные бутоны в стильной крафтовой упаковке.
           </p>
         </div>
       </div>
     </div>
+
+    <!-- Работа 4 -->
+    <div class="col">
+      <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden hover-lift">
+        <div class="img-wrapper">
+          <img src="https://sun9-27.userapi.com/s/v1/ig2/fCB60aBHjcb_GVEz5uPR8T-2ZXUnf7K8zbfPdz1Z2rT7D9Z272wnHD3k2xeMyHj3pJhsJyhVE3coCHDFUSGGPLuL.jpg?quality=95&as=32x41,48x61,72x92,108x138,160x204,240x306,360x460,480x613,540x690,640x817,720x919,1080x1379,1280x1635,1440x1839&from=bu&cs=1440x0" 
+               class="card-img-top w-100" alt="Страстный микс">
+        </div>
+        <div class="card-body d-flex flex-column justify-content-center text-center p-4">
+          <p class="card-text text-muted mb-0 fst-italic">
+            Страстный микс алого и фиолетового, украшенный изящной декоративной бабочкой. Яркий акцент для смелых.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Работа 5 -->
+    <div class="col">
+      <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden hover-lift">
+        <div class="img-wrapper">
+          <img src="https://sun9-2.userapi.com/s/v1/ig2/9AQG88RPwfZ7ELi0r7wVhZarWHUCrjDWbMNTn_-HIjaNidaE-bdmw1I3EIT3nx8FxOUyzCjiClARHK9Bqc-wJId3.jpg?quality=95&as=32x40,48x60,72x90,108x135,160x200,240x299,360x449,480x599,540x674,640x798,720x898,1080x1347,1280x1597,1440x1796,2052x2560&from=bu&cs=2052x0" 
+               class="card-img-top w-100" alt="Гармония белого и лилового">
+        </div>
+        <div class="card-body d-flex flex-column justify-content-center text-center p-4">
+          <p class="card-text text-muted mb-0 fst-italic">
+            Гармония белого и лилового. Крупные лепестки создают эффект живых цветов, добавляя торжественности.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Работа 6 -->
+    <div class="col">
+      <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden hover-lift">
+        <div class="img-wrapper">
+          <img src="https://sun9-10.userapi.com/s/v1/ig2/TeIpozXyPZAzTQYPZWUKfFchItzBQs0p9k-lkIRnoSCrhrCo63sdy2trF1Zowhx14SnS_NitizNd6860DcfwjyVr.jpg?quality=95&as=32x43,48x64,72x96,108x144,160x213,240x320,360x480,480x640,540x720,640x853,720x960,1080x1440,1280x1707,1440x1920,1920x2560&from=bu&u=wK_lkZPnkir_Nu7wryb1rtqLn8ybzzc5A3Ow7kTLWcU&cs=1920x0" 
+               class="card-img-top w-100" alt="Свежесть утреннего неба">
+        </div>
+        <div class="card-body d-flex flex-column justify-content-center text-center p-4">
+          <p class="card-text text-muted mb-0 fst-italic">
+            Свежесть утреннего неба в каждом бутоне. Композиция в голубых тонах с порхающими синими бабочками.
+          </p>
+        </div>
+      </div>
+    </div>
+
   </div>
 
-  <div class="text-center mt-5">
-    <a href="{% url 'catalog' %}" class="btn btn-success btn-lg px-4">
-      🌸 Посмотреть весь каталог
+  <!-- Кнопка перехода в каталог -->
+  <div class="text-center mt-5 pt-3">
+    <a href="{% url 'catalog' %}" class="btn btn-primary btn-lg px-5 py-3 rounded-pill shadow-sm fw-bold">
+      Посмотреть весь каталог
     </a>
   </div>
 </div>
+
+<!-- Дополнительные стили для эффектов -->
+<style>
+  .img-wrapper {
+    height: 450px; /* Фиксированная высота для всех фото */
+    overflow: hidden;
+  }
+  
+  .img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Фото заполняет блок, обрезаясь по краям, но не искажаясь */
+    transition: transform 0.5s ease;
+  }
+
+  /* Эффект увеличения фото при наведении на карточку */
+  .hover-lift:hover .img-wrapper img {
+    transform: scale(1.05);
+  }
+
+  .hover-lift {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+  }
+</style>
 {% endblock %}

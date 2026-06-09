@@ -3,6 +3,8 @@
 
 {% block content %}
 <div class="container py-5">
+  
+  <!-- БЛОК 1: ПРИВЕТСТВИЕ -->
   <div class="text-center mb-5">
     <h1 class="display-5 fw-bold text-dark">Цветочный магазин «Рукодельница»</h1>
     <div class="col-lg-8 mx-auto mt-4 p-4 bg-light rounded-4 shadow-sm border border-dark-subtle">
@@ -12,13 +14,136 @@
       </p>
     </div>
     <div class="mt-4">
-      <a href="{% url 'catalog' %}" class="btn btn-success btn-lg px-4 py-2">
+      <a href="{% url 'catalog' %}" class="btn btn-primary btn-lg px-4 py-2 rounded-pill shadow-sm">
         Перейти в каталог
       </a>
     </div>
   </div>
 
-  <hr class="my-5">
+  <hr class="my-5 opacity-25">
+
+  <!-- БЛОК 2: ЛУЧШИЕ РАБОТЫ (ПОРТФОЛИО) -->
+  <section class="mb-5">
+    <div class="text-center mb-4">
+      <h2 class="fw-bold display-6">Наши лучшие работы</h2>
+      <p class="text-muted">Вдохновение для вашего особенного момента</p>
+    </div>
+
+    <!-- Сетка 2x2 -->
+    <div class="row g-3 mb-4">
+      <!-- Работа 1 -->
+      <div class="col-md-6">
+        <div class="portfolio-item position-relative rounded-4 overflow-hidden shadow-sm" style="height: 300px;">
+          <img src="https://sun9-65.userapi.com/s/v1/ig2/uB6cxh-9_xxLmxpAAYJudbIU6t2KFwGj50mFxWVCz5DTYgF-zea3lP6Cxia1K3ek4dOnNeKnd3i28bLSBTNLrzW6.jpg?quality=95&as=32x43,48x64,72x96,108x144,160x213,240x320,360x480,480x640,540x720,640x853,720x960,1080x1440,1280x1707,1440x1920,1920x2560&from=bu&u=3pEb53hHXghnCBxmW1PDd2d3n1IFDO_ZHm07ZbpgNDo&cs=1920x0" 
+               class="w-100 h-100" style="object-fit: cover;" alt="Свадебный флеш">
+          <div class="portfolio-overlay position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-center align-items-center text-white bg-dark bg-opacity-50 opacity-0 transition-opacity">
+            <h3 class="fw-bold mb-2">Свадебный флеш</h3>
+            <p class="small mb-0">Нежность белых роз и кружева</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Работа 2 -->
+      <div class="col-md-6">
+        <div class="portfolio-item position-relative rounded-4 overflow-hidden shadow-sm" style="height: 300px;">
+          <img src="https://sun9-32.userapi.com/s/v1/ig2/L30mFyVLCU-fBlJFC8kn16fBX6oVDJUKVsndTxwkKwrKXyMqrswoLNsKfpA9sYbyOZ46pzwA1w2upV4ds2ei7Qcd.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,2560x1920&from=bu&cs=2560x0" 
+               class="w-100 h-100" style="object-fit: cover;" alt="Осенний вальс">
+          <div class="portfolio-overlay position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-center align-items-center text-white bg-dark bg-opacity-50 opacity-0 transition-opacity">
+            <h3 class="fw-bold mb-2">Осенний вальс</h3>
+            <p class="small mb-0">Глубокие фиолетовые оттенки</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Работа 3 -->
+      <div class="col-md-6">
+        <div class="portfolio-item position-relative rounded-4 overflow-hidden shadow-sm" style="height: 300px;">
+          <img src="https://sun9-27.userapi.com/s/v1/ig2/fCB60aBHjcb_GVEz5uPR8T-2ZXUnf7K8zbfPdz1Z2rT7D9Z272wnHD3k2xeMyHj3pJhsJyhVE3coCHDFUSGGPLuL.jpg?quality=95&as=32x41,48x61,72x92,108x138,160x204,240x306,360x460,480x613,540x690,640x817,720x919,1080x1379,1280x1635,1440x1839&from=bu&cs=1440x0" 
+               class="w-100 h-100" style="object-fit: cover;" alt="Страстный микс">
+          <div class="portfolio-overlay position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-center align-items-center text-white bg-dark bg-opacity-50 opacity-0 transition-opacity">
+            <h3 class="fw-bold mb-2">Страстный микс</h3>
+            <p class="small mb-0">Алый и фиолетовый с бабочкой</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Работа 4 -->
+      <div class="col-md-6">
+        <div class="portfolio-item position-relative rounded-4 overflow-hidden shadow-sm" style="height: 300px;">
+          <img src="https://sun9-10.userapi.com/s/v1/ig2/TeIpozXyPZAzTQYPZWUKfFchItzBQs0p9k-lkIRnoSCrhrCo63sdy2trF1Zowhx14SnS_NitizNd6860DcfwjyVr.jpg?quality=95&as=32x43,48x64,72x96,108x144,160x213,240x320,360x480,480x640,540x720,640x853,720x960,1080x1440,1280x1707,1440x1920,1920x2560&from=bu&u=wK_lkZPnkir_Nu7wryb1rtqLn8ybzzc5A3Ow7kTLWcU&cs=1920x0" 
+               class="w-100 h-100" style="object-fit: cover;" alt="Утренняя свежесть">
+          <div class="portfolio-overlay position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-center align-items-center text-white bg-dark bg-opacity-50 opacity-0 transition-opacity">
+            <h3 class="fw-bold mb-2">Утренняя свежесть</h3>
+            <p class="small mb-0">Голубые тона и синие бабочки</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center">
+      <a href="{% url 'works' %}" class="btn btn-outline-dark btn-lg px-4 rounded-pill">
+        Перейти в портфолио
+      </a>
+    </div>
+  </section>
+
+  <hr class="my-5 opacity-25">
+
+  <!-- БЛОК 3: ПОПУЛЯРНЫЕ ПОЗИЦИИ ИЗ КАТАЛОГА -->
+  <section class="mb-5">
+    <div class="text-center mb-4">
+      <h2 class="fw-bold display-6">Популярные букеты</h2>
+      <p class="text-muted">Хиты продаж, которые выбирают чаще всего</p>
+    </div>
+
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+      {% for product in popular_products %}
+      <div class="col">
+        <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden hover-lift">
+          <div class="img-wrapper" style="height: 200px; overflow: hidden;">
+            {% if product.photo %}
+              <img src="{{ product.photo.url }}" class="w-100 h-100" style="object-fit: cover;" alt="{{ product.name }}">
+            {% else %}
+              <div class="w-100 h-100 bg-light d-flex align-items-center justify-content-center text-muted">
+                Нет фото
+              </div>
+            {% endif %}
+          </div>
+          
+          <div class="card-body d-flex flex-column p-3">
+            <h5 class="card-title fw-bold mb-2 text-truncate">{{ product.name }}</h5>
+            
+            <div class="mt-auto d-flex justify-content-between align-items-center">
+              <span class="fs-5 fw-bold text-primary">{{ product.price }} ₽</span>
+              
+              <form method="post" action="{% url 'add-to-cart' %}" class="d-inline m-0">
+                {% csrf_token %}
+                <input type="hidden" name="product_id" value="{{ product.id }}">
+                <button type="submit" class="btn btn-primary btn-sm rounded-pill px-3">
+                  Заказать
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <div class="col-12 text-center py-4">
+        <p class="text-muted">Скоро здесь появятся популярные букеты!</p>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="text-center mt-5">
+      <a href="{% url 'catalog' %}" class="btn btn-primary btn-lg px-5 rounded-pill shadow-sm">
+        Смотреть весь каталог
+      </a>
+    </div>
+  </section>
+
+  <hr class="my-5 opacity-25">
+
+  <!-- БЛОК 4: ОТЗЫВЫ КЛИЕНТОВ -->
   {% if reviews %}
   <div class="text-center mb-4">
     <h2 class="fw-bold text-dark">Что говорят наши клиенты</h2>
@@ -49,14 +174,12 @@
           <div class="d-flex justify-content-center flex-wrap gap-2 mb-3">
             {% for photo in review.photos.all %}
             {% if photo.photo %}
-            <!-- Миниатюра -->
             <a href="#" data-bs-toggle="modal" data-bs-target="#imageModal{{ photo.id }}">
               <img src="{{ photo.photo.url }}" alt="Фото к отзыву"
                 class="rounded border border-success-subtle thumbnail"
                 style="height: 90px; width: 90px; object-fit: cover; cursor: pointer;">
             </a>
 
-            <!-- Модальное окно для этого фото -->
             <div class="modal fade" id="imageModal{{ photo.id }}" tabindex="-1"
               aria-labelledby="imageModalLabel{{ photo.id }}" aria-hidden="true">
               <div class="modal-dialog modal-dialog-centered">
@@ -113,4 +236,26 @@
   </div>
   {% endif %}
 </div>
+
+<!-- Дополнительные стили для эффектов -->
+<style>
+  /* Эффект появления текста при наведении на портфолио */
+  .portfolio-item:hover .portfolio-overlay {
+    opacity: 1 !important;
+  }
+  
+  .portfolio-overlay {
+    transition: opacity 0.3s ease-in-out;
+    backdrop-filter: blur(2px);
+  }
+
+  /* Эффект поднятия карточки товара */
+  .hover-lift {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .hover-lift:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+  }
+</style>
 {% endblock %}
